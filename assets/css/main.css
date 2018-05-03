@@ -1,0 +1,76 @@
+.navbar{
+ background:#ff6a0d;
+}
+.nav-link , .navbar-brand{
+ color: #f4f4f4;
+ cursor: pointer;
+}
+.nav-link{
+ margin-right: 1em !important;
+}
+.nav-link:hover{
+ background: #f4f4f4;
+ color: #ff6a0d;
+}
+.navbar-collapse{
+ justify-content: flex-end;
+}
+.navbar-toggler{
+  background:#fff !important;
+}
+.navbar-collapse{
+    justify-content: flex-end;
+   }
+   /* Nav Styles End */
+
+   /* Home Page Styles begin */
+   .form{
+    margin: 4em 0;
+    padding: 1em;
+    position: relative;
+   }
+   .form h1{
+    color: #ff6f0f;
+    margin: 2em;
+   }
+   .form img{
+    height: 100%;
+       width: 100%;
+       border-radius: 50%
+   }
+   
+   
+   .form .desc h3{
+    color: #10828C;
+   }
+   .form .desc p{
+    line-height:2;
+    color:#888;
+   }
+   .form .btn-secondary{
+    background:  #ff6a0d;
+    color: #fff;
+    border:0;
+   }
+
+/* Contact form  styles*/
+.contact-form{
+    margin: 6em 0;
+    position: relative;  
+   }
+   .contact-form h1{
+    padding:2em 1px;
+    color: #ff6a0d; 
+   }
+   .contact-form .right{
+    max-width: 600px;
+   }
+   .contact-form .right .btn-secondary{
+    background:  #ff6a0d;
+    color: #fff;
+    border:0;
+   }
+   .contact-form .right .form-control::placeholder{
+    color: #888;
+    font-size: 16px;
+   }
