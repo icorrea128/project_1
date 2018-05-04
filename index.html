@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bike Mapper</title>
+
+<!-- Added link to the jQuery Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- Added a link to Bootstrap-->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+<!-- Added a link to Firebase-->
+<script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+
+    <style>
+          
+    </style>
+
+</head>
+<body>
+
+ 
+<script type="text/javascript">
+
+var input = {
+        city:"Chicago",
+        lat:41.85,
+        lon:-87.65
+}
+function weatherData (){
+
+var api_key = "8ed3b9d51c85a6de3c56df1582820966";
+var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + input.lat + "&lon=" + input.lon + "&APPID=" + api_key; 
+console.log(queryURL);
+
+$.ajax({
+        url:queryURL,
+        method:"GET"
+}).then(function(response){
+        console.log(response); 
+        console.log(response.list[0]);
+        console.log(response.list[0].clouds); 
+        console.log(response.list[0].rain); 
+        console.log(response.list[0].weather[0].description); 
+        console.log(response.list[0].wind.speed);
+        console.log(response.list[0].wind.deg);
+});
+}
+weatherData();
+
+//Hourly Forecast Information
+//lat,lon,time of day
+//Will it be raining at this time of day? 
+//Find Parameters to describe hourly information and description
+
+
+    
+</script>
+
+</body>
+</html>
