@@ -5,7 +5,7 @@
         <link rel="stylesheet" type="text/css" href="assets/css/main.css">
         <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
         <script type="text/javascript" src='assets/javascript/main.js'></script>
-
+        
   </head>
     <body>
             <nav class="navbar navbar-expand-lg fixed-top ">
@@ -20,9 +20,6 @@
                           <a class="nav-link" data-value="about" href="#">About</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" data-value="blog" href="#">Blog</a>
-                        </li>
-                        <li class="nav-item">
                           <a class="nav-link" data-value="contact" href="#">Contact</a>
                         </li>
                       </ul>
@@ -30,47 +27,79 @@
                 </div>
             </nav>
         <!--End of Nav Bar --> 
+<!-- Beginning of initial input form -->        
 <div class="form" id = "home">
     <div class="container">           
         <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                 <img src="images/bike.jpg" class="img-fluid">
-                 <span class="text-justify">Bike Maps</span>
-                </div>
-                <div class="col-lg-8 col-md-8 col  -sm-12">
-                  
-                    <h1>Map My Ride</h1>
-                    <div class="form-group">
-                        <input type="text" class="form-control form-control-lg" placeholder="Your Location"="">
+                
+                <div class="col-lg-9 col-md-9 col-sm-12 bgcolor rounded-circle">
+                        <h1>Map My Ride</h1>
+                   <div class="row">
+                        
+                        <div class="col-md-2"> </div>
+                        <div class="form-group col-md-8">
+                         <input type="text" class="form-control form-control-lg" placeholder="Your Location"="">
+                         </div>
+                         <div class="col-md-2"></div>
+                    </div>  
+                    <div class="row">
+                       
+                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-8">
+                         <input type="text" class="form-control form-control-lg" placeholder="Destination"="">
+                        </div>
+                         <div class="col-md-2"></div>
+                                                             
                     </div>
-                    <div class="form-group">
-                        <input type="email" class="form-control form-control-lg" placeholder="Destination" name="email">
-                    </div>
-                    
-                    </div>
-                      <input type="submit" class="btn btn-secondary btn-block" value="Send">
+                    <!--Check box row begins -->
+                        <div class="row">
+                            <div class="col-md-7"></div>
+                            <div class="custom-control custom-checkbox col-md-5">
+                                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                <label class="custom-control-label color" for="customCheck1">Divvy Stations</label>
+                            </div>
+                            <br>
+                    <!--Check box row ends -->                                            
+                        </div>
+                    <!--submit button row begins -->
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-3">
+                        <input type="submit" id="AddrSubmit" data-value="bikemap" class="btn btn btn btn-primary" value="Submit">
+                        </div>
+                        <div class="col-md-4"></div>
                  
-                     </div>
+                    </div>
+                    <!--submit button row ends -->
                 </div> 
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                
+                    </div>
         </div> 
     </div> 
 </div>
-<div class="form" id = "bikemap">
+<!-- end of initial input form --> 
+
+<!-- Beginning of the Maps and weather section-->
+<div class="form" id="bikemap">
     <div class="container">       
         <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-12">
                 <!-- information like weather goes here-->
+                <h2>information like weather goes here</h2>
                  
                 </div>
-                <div class="col-lg-8 col-md-8 col  -sm-12 desc">
+                <div class="col-lg-8 col-md-8 col-sm-12 desc">
                   
                  <!---map goes here-->
+                 <h2>map goes here</h2>
                  
                  
                 </div>
         </div> 
     </div>      
 </div>     
+<!-- End of the Maps and weather section-->
 <!-- Contact form -->
 <div class="contact-form" id="contact">
     <div class="container">
@@ -91,7 +120,7 @@
                  
                 </textarea>
             </div>
-              <input type="submit" class="btn btn-secondary btn-block" value="Send" name="">
+              <input type="submit" class="btn btn btn-primary" value="Submit" name="">
             </div>
            </div>
          </form>
