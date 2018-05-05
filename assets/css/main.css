@@ -1,17 +1,20 @@
+h1{
+    font-family: 'Ribeye Marrow';
+}
 .navbar{
- background: #0fa2cf;
+ background: #0808b5;
  font-weight: bold
 }
 .nav-link , .navbar-brand{
- color: #0606ad;
+ color: white;
  cursor: pointer;
 }
 .nav-link{
  margin-right: 1em !important;
 }
-.nav-link:hover{
+.nav-link:hover, .navbar-brand:hover{
  background: #f4f4f4;
- color: #0606ad;
+ color: #0808b5;
  
 }
 .navbar-collapse{
@@ -73,7 +76,7 @@
    }
    .contact-form h1{
     padding:2em 1px;
-    color: #29911b; 
+    color: #0808b5; 
    }
    .contact-form .right{
     max-width: 600px;
