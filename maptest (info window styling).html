@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>test</title>
+  <style>
+    #bikemap {
+      height: 500px;
+      width: 500px;
+    }
+
+    .gm-style-iw {
+	    width: 350px !important;
+	    top: 15px !important;
+	    left: 0px !important;
+	    background-color: #fff;
+	    box-shadow: 0 1px 6px rgba(178, 178, 178, 0.6);
+	    border: 1px solid rgba(72, 181, 233, 0.6);
+	    border-radius: 2px 2px 10px 10px;
+    }
+    
+    .map-info-window {
+      margin-bottom: 10px;
+    }
+
+    .place-name {
+      font-family: 'Open Sans Condensed', sans-serif;
+	    font-size: 22px;
+	    font-weight: 400;
+	    padding: 10px;
+	    background-color: #48b5e9;
+	    color: white;
+	    margin: 0;
+	    border-radius: 2px 2px 0 0;
+    }
+
+    .place-address {
+    	font-size: 16px;
+	    font-weight: 700;
+	    padding: 5px 0;
+    }
+
+    
+
+
+  </style>
+</head>
+<body>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="assets/js/directions.js"></script>
+  <div id="bikemap"></div>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiPtzBkpdiRbstWywr5Vo2NPg1AiGUYVY&callback=initMap&libraries=places"
+  async defer></script>
+</body>
+</html>
