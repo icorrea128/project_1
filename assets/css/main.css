@@ -74,23 +74,26 @@ h1{
     padding: 80px;
     background-image: url("../images/image1.png");
     background-size: cover;
-   }
-   .contact-form h1{
-    padding:2em 1px;
-    color: #0808b5; 
-   }
-   .contact-form .right{
-    max-width: 600px;
-   }
-   .contact-form .right .btn-secondary{
-    background:  #29911b;
-    color: #fff;
-    border:0;
-   }
-   .contact-form .right .form-control::placeholder{
-    color: #888;
-    font-size: 16px;
-   }
-  
+ }
+ .contact-form h1{
+  padding:2em 1px;
+  color: #0808b5;
+ }
+ .contact-form .right{
+  max-width: 600px;
+ }
+ .contact-form .right .btn-secondary{
+  background:  #29911b;
+  color: #fff;
+  border:0;
+ }
+ .contact-form .right .form-control::placeholder{
+  color: #888;
+  font-size: 16px;
+ }
 
-  
+
+#bikemap {
+  width: 200px;
+  height: 200px;
+}

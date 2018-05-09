@@ -48,7 +48,7 @@ function initMap() { // eslint-disable-line no-unused-vars
 }
 
 /**
- * @callback getPathCallback
+ * @callback setPathCallback
  * @property {number} totalTime - total time of trip (in seconds)
  * @property {number} totalDistance - total distance travelled (in meters)
  */
@@ -60,7 +60,7 @@ function initMap() { // eslint-disable-line no-unused-vars
  * @param {number} endLat - latitude of ending position
  * @param {number} endLong - longitude of ending position
  * @param {Date} time - start time of trip
- * @param {getPathCallback} - Callback. Don't use more functions until this returns
+ * @param {setPathCallback} - Callback. Don't use more functions until this returns
  */
 function setPath(inputs) { // eslint-disable-line no-unused-vars
   $.each(['startLat', 'startLong', 'endLat', 'endLong', 'time'], function(_, eachName) {
