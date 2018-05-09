@@ -13,39 +13,211 @@
 <!-- Added a link to Firebase-->
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
 
+<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+<script type="text/javascript" src="http://beneposto.pl/jqueryrotate/js/jQueryRotateCompressed.js"></script>
+
+
+
+
     <style>
-          
+        #time{
+                position:absolute;
+                right:500px;
+                top:20px;
+
+        }
+        #icon  {
+                position:absolute;
+                right:500px;
+                top:40px;
+        }
+        #temp  {
+                position:absolute;
+                right:500px;
+                top:80px;
+        }
+        #description  {
+                position:absolute;
+                right:500px;
+                top:110px;
+        }
+        #rain  {
+                position:absolute;
+                right:500px;
+                top:100px;
+        }
+        #windDirection  {
+                position:absolute;
+                right:500px;
+                top:140px;
+        }
+        #windSpeed  {
+                position:absolute;
+                right:500px;
+                top:170px;
+        }
+        #windDirectionIcon {
+                position:absolute;
+                right:500px;
+                top:190px;
+
+        }
+                
     </style>
 
 </head>
 <body>
 
+    
+        <div class="row" id="time">
+
+        </div>
+        <div class="row" id="icon">
+                                                
+        </div>
+        <div class="row" id="description">
+                                                
+        </div>
+        <div class="row" id="temp">
+                                        
+        </div>
+        <div class="row" id="windSpeed">
+                                        
+        </div>
+        <div class="row" id="windDirection">
+                                        
+        </div>
+        <div class="row" id="windDirectionIcon">
+
+        </div>
+
+
+
+
  
 <script type="text/javascript">
 
+//Version 1 Open Weather Map
 var input = {
         city:"Chicago",
         lat:41.85,
         lon:-87.65
 }
-function weatherData (){
+function weatherData (params){
+        // var lat = params.latitude;
+        // var lon = params.longitude;
+        // var time = params.time;
 
-var api_key = "8ed3b9d51c85a6de3c56df1582820966";
-var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + input.lat + "&lon=" + input.lon + "&APPID=" + api_key; 
-console.log(queryURL);
+        
+        
+        var api_key = "8ed3b9d51c85a6de3c56df1582820966";
+        var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + input.lat + "&lon=" + input.lon + "&APPID=" + api_key; 
+        console.log(queryURL);
 
-$.ajax({
-        url:queryURL,
-        method:"GET"
-}).then(function(response){
-        console.log(response); 
-        console.log(response.list[0]);
-        console.log(response.list[0].clouds); 
-        console.log(response.list[0].rain); 
-        console.log(response.list[0].weather[0].description); 
-        console.log(response.list[0].wind.speed);
-        console.log(response.list[0].wind.deg);
-});
+        $.ajax({
+                url:queryURL,
+                method:"GET"
+        }).then(function(response){
+                console.log(response); 
+                console.log(response.list[0]);
+                console.log(response.list[0].clouds); 
+                console.log(response.list[0].rain); 
+                console.log(response.list[0].weather[0].description); 
+                console.log(response.list[0].wind.speed);
+
+                console.log("Wind Speed: " + response.list[0].wind.speed)
+                //Wind Direction
+                console.log("Wind Direction" + response.list[0].wind.deg);
+                var windDirection = response.list[0].wind.deg
+                var quad1a = 0
+                var quad1b = 90
+                var quad2a = 91
+                var quad2b = 180
+                var quad3a = 181
+                var quad3b = 270
+                var quad4a = 271
+                var quad4b = 360
+             
+                if( windDirection >= quad1a && windDirection <= quad1b){
+                        $("#windDirection").append("WD: Northeast");
+                }
+                else if( windDirection >= quad2a && windDirection <= quad2b){
+                        $("#windDirection").append("WD: Northwest");
+                }
+                else if( windDirection >= quad3a && windDirection <= quad3b){
+                        $("#windDirection").append("WD: Southwest");
+                }
+                else if( windDirection >= quad4a && windDirection <= quad4b){
+                        $("#windDirection").append("WD: Southeast");
+                }
+                
+               
+                console.log(windDirection);
+                //Humidity
+                console.log(response.list[0].main.humidity);
+                
+                // Sea Level
+                console.log(response.list[0].main.sea_level); 
+                //Weather Forecast 39 h+1, h=0
+                var weather = response.list
+                console.log(weather);
+                for(i=0;i<weather.length;i++){
+                        console.log(weather[i]);
+                }
+
+                function precise(x) {
+                        return Number.parseFloat(x).toPrecision(3);
+                }
+               //First Period Forecast
+
+                var forecast0 = $("<div>") 
+                var unitWeatherDefault = [[response.list[0].main.temp * (9/5)]- 459.67]
+                console.log(precise(unitWeatherDefault));
+                forecast0.append(precise(unitWeatherDefault));
+                
+
+                //Humidity
+                var forecast1 = $("<div>")
+                humidity = response.list[0].main.humidity
+                forecast1.append(humidity);
+                
+                //Current Time
+              
+               var currentTime = moment();
+
+          
+                var icon = response.list[0].weather[0].icon;
+                console.log(icon);
+                imageIcon0 = "http://openweathermap.org/img/w/"+icon+".png" 
+                imageIcon1 =  $("<img>")
+                imageIcon1.attr("src",imageIcon0);
+                
+                //Description
+                var description = response.list[0].weather[0].description;
+
+                //Rain 
+                var rain = response.list[0].rain;
+                if (rain === "undefined"){
+                        rain = "No Rain"
+                        console.log(rain);
+                }
+                console.log(rain);
+                
+                //Wind Direction
+                windDirectionIcon = $("<img>")
+                windDirectionIcon.attr("src","http://www.animatedimages.org/data/media/111/animated-arrow-image-0147.gif");
+                $("#windDirectionIcon").append(windDirectionIcon); 
+                $("#windDirectionIcon").rotate(response.list[0].wind.deg);
+                
+
+                $("#time").append(currentTime);
+                $("#icon").append(imageIcon1);
+                $("#description").append(description);
+                $("#temp").append(forecast0)
+                $("#windSpeed").append(response.list[0].wind.speed + "M/S")
+               
+                //Second Period Forecast
+        });
 }
 weatherData();
 
@@ -53,6 +225,8 @@ weatherData();
 //lat,lon,time of day
 //Will it be raining at this time of day? 
 //Find Parameters to describe hourly information and description
+
+//Version 2 Google Weather API
 
 
     
