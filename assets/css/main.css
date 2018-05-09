@@ -1,0 +1,96 @@
+h1{
+    font-family: 'Ribeye Marrow';
+}
+.navbar{
+ background: #0808b5;
+ font-weight: bold
+}
+.nav-link , .navbar-brand{
+ color: white;
+ cursor: pointer;
+}
+.nav-link{
+ margin-right: 1em !important;
+}
+.nav-link:hover, .navbar-brand:hover{
+ background: #f4f4f4;
+ color: #0808b5;
+ 
+}
+.navbar-collapse{
+ justify-content: flex-end;
+}
+.navbar-toggler{
+  background:#29911b !important;
+}
+.navbar-collapse{
+    justify-content: flex-end;
+   }
+   /* Nav Styles End */
+
+   /* Home Page Styles begin */
+   .form{
+    /*margin: 4em 0;*/
+    padding: 60px;
+    position: relative;
+    height: 100%;
+    background-image: url("../images/image1.png");
+    background-size: cover;
+   }
+   .form h1{
+    color: white;
+    margin: 2em;
+   }
+   .form img{
+    height: 100%;
+       width: 100%;
+       
+   }
+   .bgcolor{
+       background-color: #0808b5;
+     
+   }
+   .color{
+       color: white;
+   }
+   
+   .form .desc h3{
+    color: white;
+   }
+   .form .desc p{
+    line-height:2;
+    color:#888;
+   }
+   .form .btn-secondary{
+    background:  #29911b;
+    color: #fff;
+    border:0;
+   }
+
+/* Contact form  styles*/
+.contact-form{
+    margin: 6em 0;
+    position: relative;  
+    padding: 80px;
+    background-image: url("../images/image1.png");
+    background-size: cover;
+   }
+   .contact-form h1{
+    padding:2em 1px;
+    color: #0808b5; 
+   }
+   .contact-form .right{
+    max-width: 600px;
+   }
+   .contact-form .right .btn-secondary{
+    background:  #29911b;
+    color: #fff;
+    border:0;
+   }
+   .contact-form .right .form-control::placeholder{
+    color: #888;
+    font-size: 16px;
+   }
+  
+
+  
