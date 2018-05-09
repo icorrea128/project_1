@@ -83,6 +83,21 @@ function setPath(inputs) { // eslint-disable-line no-unused-vars
  */
 
 /**
+ * Manually add a marker, specified by latitude and longitude.
+ * @param {string} name - The name of the place.
+ * @param {number} lat - Latitude of the place.
+ * @param {number} long - Longitude of the place.
+ * @param {string} [address] - Address of the place. Optional.
+ */
+function addMarker(inputs) { // eslint-disable-line no-unused-vars
+  makeMarker({
+    name: inputs.name,
+    location: new google.maps.LatLng({ lat: inputs.lat, lng: inputs.long }),
+    address: inputs.address
+  });
+}
+
+/**
  * Add markers for places, searching either by name or by type.
  * Supports types listed here:
  * https://developers.google.com/places/supported_types
@@ -106,23 +121,7 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
     if (!interestingIds.includes(id)) {
       interestingIds.push(id);
 
-      var marker = new google.maps.Marker({
-        map: map,
-        title: place.name,
-        position: place.geometry.location
-      });
-
-      marker.addListener('click', function() {
-        var infoBubble = new InfoBubble({
-          map: map,
-          content: infoForPlace(place),
-          position: place.geometry.location
-        });
-
-        $(infoBubble.c).addClass('map-info-bubble');
-
-        infoBubble.open();
-      });
+      makeMarkerForPlace(place);
     }
   };
 
@@ -144,6 +143,41 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
 }
 
 // END PUBLIC API
+
+function makeMarkerForPlace(place) {
+  makeMarker({
+    name: place.name,
+    location: place.geometry.location,
+  });
+}
+
+function makeMarker(inputs) {
+  var marker = new google.maps.Marker({
+    map: map,
+    title: inputs.name,
+    position: inputs.location
+  });
+
+  marker.addListener('click', function() {
+    var content = $('<div class="map-info-content">');
+
+    content.append($('<h1 class="info-place-name">').text(inputs.name));
+
+    if (inputs.address) {
+      content.append($('<h2 class="info-place-address">').text(inputs.address));
+    }
+
+    var infoBubble = new InfoBubble({
+      map: map,
+      content: content[0],
+      position: inputs.location
+    });
+
+    $(infoBubble.c).addClass('map-info-bubble');
+
+    infoBubble.open();
+  });
+}
 
 function logError(error) {
   console.log(error); // eslint-disable-line no-console
@@ -215,8 +249,4 @@ function doPlacesSearch(query, closure) {
       setTimeout(function() { doPlacesSearch(query, closure); }, 1000);
     }
   });
-}
-
-function infoForPlace(place) {
-  return '<div class="map-info-content"><h1 class="info-place-name">' + place.name + '</h1><h2 class="info-place-address">' + place.vicinity + '</h2></div>';
 }

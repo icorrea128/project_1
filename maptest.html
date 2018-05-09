@@ -28,10 +28,16 @@
           console.log('total time: ' + output.totalTime);
           console.log('total distance: ' + output.totalDistance);
 
-          addMarkers({
-            type: "convenience_store",
-            radius: 480
-          })
+          addMarker({
+            name: 'Someplace Wet',
+            lat: 42.064730,
+            long: -87.670035,
+            address: '123 Middle Of Lake Michigan'
+          });
+//          addMarkers({
+//            type: "convenience_store",
+//            radius: 480
+//          })
         }
       });
     }
