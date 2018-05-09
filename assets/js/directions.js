@@ -1,5 +1,11 @@
 /* eslint-env browser, jquery */
-/* global google */
+/* global google, InfoBubble */
+
+/* Requires the following JS libraries:
+ * jQuery - http://code.jquery.com/jquery-3.3.1.min.js
+ * Google Maps & Places - https://maps.googleapis.com/maps/api/js?key=AIzaSyDiPtzBkpdiRbstWywr5Vo2NPg1AiGUYVY&callback=initMap&libraries=places
+ * InfoBubble - assets/js/infobubble.js (local)
+ */
 
 //var googleAPIKey = 'AIzaSyDiPtzBkpdiRbstWywr5Vo2NPg1AiGUYVY';
 //var placesAPIKey = 'AIzaSyCNX_nJxlGhR195hMYMjgGLMchLGN_jv30';
@@ -13,6 +19,16 @@ var map;
 var routes;
 
 // BEGIN PUBLIC API
+
+/*
+ * CSS Classes:
+ *
+ * map-info-bubble - InfoBubble when marker is clicked
+ * map-info-content - main div for info bubble content
+ * info-place-name - place name header in info bubble
+ * info-place-address - place address header in info bubble
+ *
+ */
 
 /**
  * Call this on page load to initialize internal data structures.
@@ -82,8 +98,6 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
     return;
   }
 
-  var infoWindow = new google.maps.InfoWindow();
-
   var interestingIds = [];
 
   var addInterestingPlace = function(place) {
@@ -99,8 +113,15 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
       });
 
       marker.addListener('click', function() {
-        infoWindow.open(map, marker);
-        infoWindow.setContent(infoForPlace(place));
+        var infoBubble = new InfoBubble({
+          map: map,
+          content: infoForPlace(place),
+          position: place.geometry.location
+        });
+
+        $(infoBubble.c).addClass('map-info-bubble');
+
+        infoBubble.open();
       });
     }
   };
@@ -197,6 +218,5 @@ function doPlacesSearch(query, closure) {
 }
 
 function infoForPlace(place) {
-  logError(place);
-  return '<div class="map-info-window"><h1 class="place-name">' + place.name + '</h1><h2 class="place-address">' + place.vicinity + '</h2></div>';
+  return '<div class="map-info-content"><h1 class="info-place-name">' + place.name + '</h1><h2 class="info-place-address">' + place.vicinity + '</h2></div>';
 }

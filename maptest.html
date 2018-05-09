@@ -12,6 +12,7 @@
 <body>
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://momentjs.com/downloads/moment.min.js"></script>
+  <script src="assets/js/infobubble.js"></script>
   <script src="assets/js/directions.js"></script>
   <div id="bikemap"></div>
   <script>
@@ -23,9 +24,9 @@
         endLat: 42.157849,
         endLong: -87.776675,
         time: new Date(),
-        callback: function(totalTime, totalDistance) {
-          console.log('total time: ' + totalTime);
-          console.log('total distance: ' + totalDistance);
+        callback: function(output) {
+          console.log('total time: ' + output.totalTime);
+          console.log('total distance: ' + output.totalDistance);
 
           addMarkers({
             type: "convenience_store",
