@@ -1,15 +1,8 @@
-var googleAPIKey = 'AIzaSyDiPtzBkpdiRbstWywr5Vo2NPg1AiGUYVY';
-var placesAPIKey = 'AIzaSyCNX_nJxlGhR195hMYMjgGLMchLGN_jv30';
+/* eslint-env browser, jquery */
+/* global google */
 
-var placeRadius = 600; // in meters
-
-function directionsURL(inputs) {
-  var origin = inputs.origin;
-  var destination = inputs.destination;
-  var departureTime = inputs.departureTime;
-
-  return "https://maps.googleapis.com/maps/api/directions/json?mode=bicycling&origin=" + origin + "&destination=" + destination + "&departure_time=" + departureTime + "1399995076&key=" + googleAPIKey;
-}
+//var googleAPIKey = 'AIzaSyDiPtzBkpdiRbstWywr5Vo2NPg1AiGUYVY';
+//var placesAPIKey = 'AIzaSyCNX_nJxlGhR195hMYMjgGLMchLGN_jv30';
 
 var directionsService;
 var directionsDisplay;
@@ -17,10 +10,17 @@ var placesService;
 
 var map;
 
-function initMap() {
+var routes;
+
+// BEGIN PUBLIC API
+
+/**
+ * Call this on page load to initialize internal data structures.
+ */
+function initMap() { // eslint-disable-line no-unused-vars
   directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer();
-  var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+  var chicago = new google.maps.LatLng(41.8735707,-87.650842);
   var mapOptions = {
     zoom:7,
     center: chicago
@@ -29,23 +29,111 @@ function initMap() {
   map = new google.maps.Map($('#bikemap')[0], mapOptions);
   placesService = new google.maps.places.PlacesService(map);
   directionsDisplay.setMap(map);
+}
+
+/**
+ * @callback getPathCallback
+ * @property {number} totalTime - total time of trip (in seconds)
+ * @property {number} totalDistance - total distance travelled (in meters)
+ */
+
+/**
+ * Calculate a route, and display it on the map.
+ * @param {number} startLat - latitude of starting position
+ * @param {number} startLong - longitude of starting position
+ * @param {number} endLat - latitude of ending position
+ * @param {number} endLong - longitude of ending position
+ * @param {Date} time - start time of trip
+ * @param {getPathCallback} - Callback. Don't use more functions until this returns
+ */
+function setPath(inputs) { // eslint-disable-line no-unused-vars
+  $.each(['startLat', 'startLong', 'endLat', 'endLong', 'time'], function(_, eachName) {
+    if (!inputs[eachName]) {
+      logError("error: no value for " + eachName);
+      return;
+    }
+  });
 
   calcRoute({
-    start: "1310 chicago ave evanston, il",
-    end: "ravinia park highland park, il"
+    start: new google.maps.LatLng(inputs.startLat, inputs.startLong),
+    end: new google.maps.LatLng(inputs.endLat, inputs.endLong),
+    time: inputs.time,
+    callback: inputs.callback
   });
 }
 
-function calcRoute(inputs) {
-  var start = inputs.start;
-  var end = inputs.end;
-  var request = {
-    origin: start,
-    destination: end,
-    travelMode: 'BICYCLING'
-  };
+/**
+ * @callback addMarkersCallback
+ */
+
+/**
+ * Add markers for places, searching either by name or by type.
+ * Supports types listed here:
+ * https://developers.google.com/places/supported_types
+ * @param {string} [name] - Search for places by a name.
+ * @param {string} [type] - Search for places of a certain type. Ignored if a name is specified.
+ * @param {number} radius - Search at this distance from the route (in meters)
+ */
+function addMarkers(inputs) { // eslint-disable-line no-unused-vars
+  var route = routes[0];
+
+  if (!route) {
+    logError('addMarkers called before any routes have been mapped');
+    return;
+  }
+
+  var infoWindow = new google.maps.InfoWindow();
 
   var interestingIds = [];
+
+  var addInterestingPlace = function(place) {
+    var id = place.id;
+
+    if (!interestingIds.includes(id)) {
+      interestingIds.push(id);
+
+      var marker = new google.maps.Marker({
+        map: map,
+        title: place.name,
+        position: place.geometry.location
+      });
+
+      marker.addListener('click', function() {
+        infoWindow.open(map, marker);
+        infoWindow.setContent(infoForPlace(place));
+      });
+    }
+  };
+
+  var lastQueryDistance = 0;
+
+  $.each(route.legs, function(_, eachLeg) {
+    $.each(eachLeg.steps, function(__, eachStep) {
+      lastQueryDistance += eachStep.distance.value;
+
+      if (lastQueryDistance > inputs.radius) {
+        findInterestingPlaces(eachStep.start_location, inputs, addInterestingPlace);
+        lastQueryDistance = 0;
+      }
+    });
+  });
+
+  var endLocation = route.legs[route.legs.length - 1].end_location;
+  findInterestingPlaces(endLocation, inputs, addInterestingPlace);
+}
+
+// END PUBLIC API
+
+function logError(error) {
+  console.log(error); // eslint-disable-line no-console
+}
+
+function calcRoute(inputs) {
+  var request = {
+    origin: inputs.start,
+    destination: inputs.end,
+    travelMode: 'BICYCLING'
+  };
 
   directionsService.route(request, function(result, status) {
     if (status !== 'OK') {
@@ -54,14 +142,10 @@ function calcRoute(inputs) {
 
     directionsDisplay.setDirections(result);
 
-    var center = map.getCenter();
-    var centerLat = center.lat();
-    var centerLong = center.lng();
-
-    var routes = result.routes;
+    routes = result.routes;
 
     if (routes.length === 0) {
-        // report error somehow and bail
+      logError('Zero-length route');
       return;
     }
 
@@ -70,84 +154,49 @@ function calcRoute(inputs) {
 
     var legs = routes[0].legs;
 
-    var startLocation = legs[0].start_location;
-    var endLocation = legs[legs.length - 1].end_location;
-
-    var infoWindow = new google.maps.InfoWindow();
-
-    var addInterestingPlace = function(place) {
-      var id = place.id;
-
-      if (!interestingIds.includes(id)) {
-        interestingIds.push(id);
-
-        let marker = new google.maps.Marker({
-          map: map,
-          title: place.name,
-          position: place.geometry.location
-        });
-
-        marker.addListener('click', function() {
-          infoWindow.open(map, marker);
-          infoWindow.setContent(infoForPlace(place));
-        });
-      }
-    };
-
-    var lastQueryDistance = 0;
-
     $.each(legs, function(_, eachLeg) {
       var distance = eachLeg.distance.value;
       totalDistance += distance;
 
       var time = eachLeg.duration.value;
       totalTime += time;
-
-      $.each(eachLeg.steps, function(_, eachStep) {
-        lastQueryDistance += eachStep.distance.value;
-        
-        if (lastQueryDistance > placeRadius) {
-          findInterestingPlaces(eachStep.start_location, addInterestingPlace);
-          lastQueryDistance = 0;
-        }
-      });
     });
 
-    findInterestingPlaces(endLocation, addInterestingPlace);
-
-    console.log('total distance: ' + totalDistance + ' meters');
-    console.log('total time: ' + totalTime + ' seconds');
+    inputs.callback({ totalTime: totalTime, totalDistance: totalDistance });
   });
 }
 
-function findInterestingPlaces(loc, closure) {
-  const types = ['convenience_store'];
+function findInterestingPlaces(loc, inputs, closure) {
+  var query = {
+    location: loc,
+    radius: inputs.radius,
+  };
 
-  $.each(types, (_, eachType) => {
-    let query = {
-      location: loc,
-      radius: placeRadius,
-      type: eachType
-    };
+  if (inputs.name) {
+    query.name = inputs.name;
+  } else if (inputs.type) {
+    query.type = inputs.type;
+  } else {
+    logError('Must provide either name or type for addMarkers!');
+    return;
+  }
 
-    doPlacesSearch(query, eachType, closure);
-  });
+  doPlacesSearch(query, closure);
 }
 
-function doPlacesSearch(query, type, closure) {
-  placesService.nearbySearch(query, (data, status, pagination) => {
+function doPlacesSearch(query, closure) {
+  placesService.nearbySearch(query, function(data, status) {
     if (status === 'OK' && data) {
-      console.log('found a ' + type + ', count ' + data.length);
       $.each(data, function(_, eachPlace) {
         closure(eachPlace);
       });
     } else if (status === 'OVER_QUERY_LIMIT') {
-      setTimeout(() => { doPlacesSearch(query, type, closure) }, 1000);
+      setTimeout(function() { doPlacesSearch(query, closure); }, 1000);
     }
   });
 }
 
 function infoForPlace(place) {
-  console.log(place);
+  logError(place);
   return '<div class="map-info-window"><h1 class="place-name">' + place.name + '</h1><h2 class="place-address">' + place.vicinity + '</h2></div>';
 }
