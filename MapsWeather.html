@@ -14,8 +14,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/geocomplete/1.7.0/jquery.geocomplete.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <script src="assets/js/infobubble.js"></script>
     <script src="assets/js/directions.js"></script>
+    <script src="assets/js/weather.js"></script>
   </head>
 
 
@@ -45,16 +47,67 @@
             <div class="row">
                     <div class="col-lg-4 col-md-4 col-sm-12">
                     <!-- information like weather goes here-->
-                    <h2>information like weather goes here</h2>
-                     
-                    </div>
+                      <div class="row">
+
+                        <div class="col-md-6" id="column1">
+                            <div id="time">
+                             
+                            </div>
+                            <div id="icon">
+                                                              
+                            </div>
+                            <div id="description">
+                                                                
+                            </div>
+                            <div id="temp">
+                                                         
+                            </div>
+                            <div id="windSpeed">
+                                                        
+                            </div>
+                            <div id="windDirection">
+                                                        
+                            </div>
+                            <div id="windDirectionIcon">
+                                
+                            </div>
+
+                        </div>
+                        <div class="col-md-6" id="column2">
+                            <div id="time1">
+                                
+                            </div>
+                            <div id="icon1">
+                                                                 
+                            </div>
+                            <div id="description1">
+                                                                 
+                            </div>
+                            <div id="temp1">
+                                                     
+                            </div>
+                            <div id="windSpeed1">
+                                                   
+                            </div>
+                            <div id="windDirection1">
+                                                     
+                            </div>
+                            <div id="windDirectionIcon1">
+                                
+                            </div>
+
+                        </div>
+                      </div>
+        
                     <div class="col-lg-8 col-md-8 col-sm-12 desc">
                       
                      <!---map goes here-->
-                    <div id="bikemap"></div>
+                    <div id="bikemap">
+                        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiPtzBkpdiRbstWywr5Vo2NPg1AiGUYVY&callback=initMap&libraries=places"></script>
+                    </div>
             </div> 
         </div>      
     </div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiPtzBkpdiRbstWywr5Vo2NPg1AiGUYVY&callback=initMap&libraries=places"></script>
+   
 </body>
 </html>

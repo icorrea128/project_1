@@ -97,3 +97,7 @@ h1{
   width: 200px;
   height: 200px;
 }
+
+#column1, #column2 {
+    position:absolute;
+}
