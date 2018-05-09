@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <!-- Added a link to Bootstrap-->
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous">
 <!-- Added a link to Firebase-->
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
@@ -20,6 +20,10 @@
 
 
     <style>
+        #container {
+                width:960px;
+                height:900px;
+        }
         #time{
                 position:absolute;
                 right:500px;
@@ -40,6 +44,7 @@
                 position:absolute;
                 right:500px;
                 top:110px;
+                
         }
         #rain  {
                 position:absolute;
@@ -62,34 +67,112 @@
                 top:190px;
 
         }
+        
+
+
+         #time1{
+                position:absolute;
+                right:275px;
+                top:20px;
+
+        }
+        #icon1  {
+                position:absolute;
+                right:275px;
+                top:40px;
+        }
+        #temp1  {
+                position:absolute;
+                right:275px;
+                top:80px;
+        }
+        #description1  {
+                position:absolute;
+                right:275px;
+                top:110px;
+                
+        }
+        #rain1  {
+                position:absolute;
+                right:275px;
+                top:100px;
+        }
+        #windDirection1  {
+                position:absolute;
+                right:275px;
+                top:140px;
+        }
+        #windSpeed1  {
+                position:absolute;
+                right:275px;
+                top:170px;
+        }
+        #windDirectionIcon1 {
+                position:absolute;
+                right:275px;
+                top:190px;
+
+        }
+
+
                 
     </style>
 
 </head>
 <body>
 
-    
-        <div class="row" id="time">
+<div class="container">
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="row" id="time">
 
+                        </div>
+                        <div class="row" id="icon">
+                                                                
+                        </div>
+                        <div class="row" id="description">
+                                                                
+                        </div>
+                        <div class="row" id="temp">
+                                                        
+                        </div>
+                        <div class="row" id="windSpeed">
+                                                        
+                        </div>
+                        <div class="row" id="windDirection">
+                                                        
+                        </div>
+                        <div class="row" id="windDirectionIcon">
+                
+                        </div>
+                </div>
+                <div class="col-lg-6">
+                        <div class="row" id="time1">
+                                
+                        </div>
+                        <div class="row" id="icon1">
+                                                                
+                        </div>
+                        <div class="row" id="description1">
+                                                                        
+                        </div>
+                        <div class="row" id="temp1">
+                                                                
+                        </div>
+                        <div class="row" id="windSpeed1">
+                                                                
+                        </div>
+                        <div class="row" id="windDirection1">
+                                                                
+                        </div>
+                        <div class="row" id="windDirectionIcon1">
+                        
+                        </div>
+                </div>
         </div>
-        <div class="row" id="icon">
-                                                
-        </div>
-        <div class="row" id="description">
-                                                
-        </div>
-        <div class="row" id="temp">
-                                        
-        </div>
-        <div class="row" id="windSpeed">
-                                        
-        </div>
-        <div class="row" id="windDirection">
-                                        
-        </div>
-        <div class="row" id="windDirectionIcon">
-
-        </div>
+                
+</div>
+       
 
 
 
@@ -118,14 +201,40 @@ function weatherData (params){
                 url:queryURL,
                 method:"GET"
         }).then(function(response){
-                console.log(response); 
-                console.log(response.list[0]);
-                console.log(response.list[0].clouds); 
-                console.log(response.list[0].rain); 
-                console.log(response.list[0].weather[0].description); 
-                console.log(response.list[0].wind.speed);
+                //Significant Figures
+                function precise(x) {
+                        return Number.parseFloat(x).toPrecision(3);
+                }
 
-                console.log("Wind Speed: " + response.list[0].wind.speed)
+                //Weather Forecast 39 h+1, h=0
+                   var weather = response.list
+                console.log(weather);
+                for(i=0;i<weather.length;i++){
+                        console.log(weather[i]);
+                }
+
+                //Current Time
+              
+               var currentTime = moment()
+               var timeOfWeather = response.list[0].dt_txt
+               
+                //Icon
+                var icon0 = response.list[0].weather[0].icon;
+                console.log(icon);
+                imageIcon0 = "http://openweathermap.org/img/w/"+icon0+".png" 
+                imageIcon1 =  $("<img>")
+                imageIcon1.attr("src",imageIcon0);
+                
+                //Description
+                var description0 = response.list[0].weather[0].description;
+                
+                //First Period Forecast
+
+                var forecast0 = $("<div>") 
+                var unitWeatherDefault = [[response.list[0].main.temp * (9/5)]- 459.67]
+                console.log(precise(unitWeatherDefault));
+                forecast0.text(precise(unitWeatherDefault));
+
                 //Wind Direction
                 console.log("Wind Direction" + response.list[0].wind.deg);
                 var windDirection = response.list[0].wind.deg
@@ -139,84 +248,100 @@ function weatherData (params){
                 var quad4b = 360
              
                 if( windDirection >= quad1a && windDirection <= quad1b){
-                        $("#windDirection").append("WD: Northeast");
+                        $("#windDirection").append("WD: Northeast at " + precise(windDirection) + "degrees");
                 }
                 else if( windDirection >= quad2a && windDirection <= quad2b){
-                        $("#windDirection").append("WD: Northwest");
+                        $("#windDirection").append("WD: Northwest at " + precise(windDirection) + "degrees");
                 }
                 else if( windDirection >= quad3a && windDirection <= quad3b){
-                        $("#windDirection").append("WD: Southwest");
+                        $("#windDirection").append("WD: Southwest at " + precise(windDirection) + "degrees");
                 }
                 else if( windDirection >= quad4a && windDirection <= quad4b){
-                        $("#windDirection").append("WD: Southeast");
+                        $("#windDirection").append("WD: Southeast at " + precise(windDirection) + "degrees");
                 }
                 
                
                 console.log(windDirection);
+
                 //Humidity
                 console.log(response.list[0].main.humidity);
                 
                 // Sea Level
                 console.log(response.list[0].main.sea_level); 
-                //Weather Forecast 39 h+1, h=0
-                var weather = response.list
-                console.log(weather);
-                for(i=0;i<weather.length;i++){
-                        console.log(weather[i]);
-                }
 
-                function precise(x) {
-                        return Number.parseFloat(x).toPrecision(3);
-                }
-               //First Period Forecast
+                $("#time").append(timeOfWeather);
+                $("#icon").append(imageIcon1);
+                $("#description").append(description0);
+                $("#temp").append("Current Temperature " + forecast0.text() + "°F")
+                console.log(forecast0);
+                $("#windSpeed").append("Wind Speed at " + response.list[0].wind.speed + "M/S")
+               
 
-                var forecast0 = $("<div>") 
-                var unitWeatherDefault = [[response.list[0].main.temp * (9/5)]- 459.67]
-                console.log(precise(unitWeatherDefault));
-                forecast0.append(precise(unitWeatherDefault));
-                
 
-                //Humidity
-                var forecast1 = $("<div>")
-                humidity = response.list[0].main.humidity
-                forecast1.append(humidity);
-                
+                //Second Period Forecast
+
                 //Current Time
               
-               var currentTime = moment();
-
-          
-                var icon = response.list[0].weather[0].icon;
+               var currentTime = moment()
+               var timeOfWeather = response.list[1].dt_txt
+               
+                //Icon
+                var icon1 = response.list[1].weather[0].icon;
                 console.log(icon);
-                imageIcon0 = "http://openweathermap.org/img/w/"+icon+".png" 
-                imageIcon1 =  $("<img>")
-                imageIcon1.attr("src",imageIcon0);
+                imageIcon2 = "http://openweathermap.org/img/w/"+icon1+".png" 
+                imageIcon3 =  $("<img>")
+                imageIcon3.attr("src",imageIcon2);
                 
                 //Description
-                var description = response.list[0].weather[0].description;
-
-                //Rain 
-                var rain = response.list[0].rain;
-                if (rain === "undefined"){
-                        rain = "No Rain"
-                        console.log(rain);
-                }
-                console.log(rain);
+                var description1 = response.list[1].weather[0].description;
                 
+                //First Period Forecast
+
+                var forecast1 = $("<div>") 
+                var unitWeatherDefault = [[response.list[1].main.temp * (9/5)]- 459.67]
+                console.log(precise(unitWeatherDefault));
+                forecast1.text(precise(unitWeatherDefault));
+
                 //Wind Direction
-                windDirectionIcon = $("<img>")
-                windDirectionIcon.attr("src","http://www.animatedimages.org/data/media/111/animated-arrow-image-0147.gif");
-                $("#windDirectionIcon").append(windDirectionIcon); 
-                $("#windDirectionIcon").rotate(response.list[0].wind.deg);
+                console.log("Wind Direction" + response.list[1].wind.deg);
+                var windDirection1 = response.list[1].wind.deg
+                var quad1a = 0
+                var quad1b = 90
+                var quad2a = 91
+                var quad2b = 180
+                var quad3a = 181
+                var quad3b = 270
+                var quad4a = 271
+                var quad4b = 360
+             
+                if( windDirection1 >= quad1a && windDirection1 <= quad1b){
+                        $("#windDirection1").append("WD: Northeast at " + precise(windDirection1) + "degrees");
+                }
+                else if( windDirection1 >= quad2a && windDirection1 <= quad2b){
+                        $("#windDirection1").append("WD: Northwest at " + precise(windDirection1) + "degrees");
+                }
+                else if( windDirection1 >= quad3a && windDirection1 <= quad3b){
+                        $("#windDirection1").append("WD: Southwest at " + precise(windDirection1) + "degrees");
+                }
+                else if( windDirection1 >= quad4a && windDirection1 <= quad4b){
+                        $("#windDirection1").append("WD: Southeast at " + precise(windDirection1) + "degrees");
+                }
                 
-
-                $("#time").append(currentTime);
-                $("#icon").append(imageIcon1);
-                $("#description").append(description);
-                $("#temp").append(forecast0)
-                $("#windSpeed").append(response.list[0].wind.speed + "M/S")
                
-                //Second Period Forecast
+                console.log(windDirection1);
+
+                //Humidity
+                console.log(response.list[1].main.humidity);
+                
+                // Sea Level
+                console.log(response.list[1].main.sea_level); 
+                
+                $("#time1").append(timeOfWeather);
+                $("#icon1").append(imageIcon3);
+                $("#description1").append(description1);
+                $("#temp1").append("Current Temperature " + forecast1.text() + "°F")
+                console.log(forecast1);
+                $("#windSpeed1").append("Wind Speed at " + response.list[1].wind.speed + "M/S")
         });
 }
 weatherData();
