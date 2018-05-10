@@ -98,6 +98,13 @@ h1{
   height: 200px;
 }
 
-#column1, #column2 {
-    position:absolute;
+#column1 {
+    border:solid;
+    background-color:gold;
 }
+
+#time2, #description2, #temp2, #windSpeed2, #windDirection2 {
+    text-align:center;
+}
+
+
