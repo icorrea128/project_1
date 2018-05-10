@@ -28,6 +28,7 @@ var routes;
  * map-info-content - main div for info bubble content
  * info-place-name - place name header in info bubble
  * info-place-address - place address header in info bubble
+ * info-place-icon - icon div in info bubble
  *
  */
 
@@ -90,13 +91,15 @@ function setPath(inputs) { // eslint-disable-line no-unused-vars
  * @param {number} inputs.long - Longitude of the place.
  * @param {string} [inputs.address] - Address of the place. Optional.
  * @param {string} [inputs.markerImage] - Marker image. Optional.
+ * @param {string} [inputs.infoIcon] - Icon for Info window. Optional.
  */
 function addMarker(inputs) { // eslint-disable-line no-unused-vars
   makeMarker({
     name: inputs.name,
     location: new google.maps.LatLng({ lat: inputs.lat, lng: inputs.long }),
     address: inputs.address,
-    markerImage: inputs.markerImage
+    markerImage: inputs.markerImage,
+    infoIcon: inputs.infoIcon
   });
 }
 
@@ -313,6 +316,10 @@ function makeMarker(inputs) {
 
   marker.addListener('click', function() {
     var content = $('<div class="map-info-content">');
+
+    if (inputs.infoIcon) {
+      content.append($('<img>').attr('src', inputs.infoIcon).attr('alt', inputs.name).addClass('info-place-icon'));
+    }
 
     content.append($('<h1 class="info-place-name">').text(inputs.name));
 
