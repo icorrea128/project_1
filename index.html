@@ -113,6 +113,50 @@
                 top:190px;
 
         }
+        #time2{
+                position:absolute;
+                right:700px;
+                top:20px;
+
+        }
+        #icon2  {
+                position:absolute;
+                right:700px;
+                top:40px;
+        }
+        #temp2  {
+                position:absolute;
+                right:700px;
+                top:80px;
+        }
+        #description2  {
+                position:absolute;
+                right:700px;
+                top:110px;
+                
+        }
+        #rain2  {
+                position:absolute;
+                right:700px;
+                top:100px;
+        }
+        #windDirection2  {
+                position:absolute;
+                right:700px;
+                top:140px;
+        }
+        #windSpeed2  {
+                position:absolute;
+                right:700px;
+                top:170px;
+        }
+        #windDirectionIcon2 {
+                position:absolute;
+                right:700px;
+                top:190px;
+
+        }
+
 
 
                 
@@ -123,49 +167,73 @@
 
 <div class="container">
         <div class="row">
-                <div class="col-lg-6">
-                        <div class="row" id="time">
+                <div class="col-lg-4">
+                        <div  id="time2">
+                
+                        </div>
+                        <div  id="icon2">
+                                                                                
+                        </div>
+                        <div  id="description2">
+                                                                                
+                        </div>
+                        <div id="temp2">
+                                                                        
+                        </div>
+                        <div  id="windSpeed2">
+                                                                        
+                        </div>
+                        <div id="windDirection2">
+                                                                        
+                        </div>
+                        <div id="windDirectionIcon2">
+                                
+                        </div>
+                </div>
+
+                <div class="col-lg-4">
+                        <div  id="time">
 
                         </div>
-                        <div class="row" id="icon">
+                        <div  id="icon">
                                                                 
                         </div>
-                        <div class="row" id="description">
+                        <div  id="description">
                                                                 
                         </div>
-                        <div class="row" id="temp">
+                        <div id="temp">
                                                         
                         </div>
-                        <div class="row" id="windSpeed">
+                        <div  id="windSpeed">
                                                         
                         </div>
-                        <div class="row" id="windDirection">
+                        <div id="windDirection">
                                                         
                         </div>
-                        <div class="row" id="windDirectionIcon">
+                        <div id="windDirectionIcon">
                 
                         </div>
                 </div>
-                <div class="col-lg-6">
-                        <div class="row" id="time1">
+                <div class="col-lg-4">
+                        <div id="time1">
                                 
                         </div>
-                        <div class="row" id="icon1">
+                        <div id="icon1">
                                                                 
                         </div>
-                        <div class="row" id="description1">
+                        <div id="description1">
                                                                         
                         </div>
-                        <div class="row" id="temp1">
+                        <div  id="temp1">
                                                                 
                         </div>
-                        <div class="row" id="windSpeed1">
+                        <div  id="windSpeed1">
                                                                 
                         </div>
-                        <div class="row" id="windDirection1">
+                        <div  id="windDirection1">
                                                                 
                         </div>
-                        <div class="row" id="windDirectionIcon1">
+                        <div  id="windDirectionIcon1">
                         
                         </div>
                 </div>
@@ -195,6 +263,92 @@ function weatherData (params){
         
         var api_key = "8ed3b9d51c85a6de3c56df1582820966";
         var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + input.lat + "&lon=" + input.lon + "&APPID=" + api_key; 
+        
+        var queryURLCurrentWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + input.lat + "&lon=" + input.lon + "&APPID=" + api_key;
+
+        $.ajax({
+                url:queryURLCurrentWeather,
+                method:"GET"
+        }).then(function(CWResponse){
+                console.log(CWResponse)
+                function precise(x) {
+                        return Number.parseFloat(x).toPrecision(3);
+                }
+
+                //Unix Time
+                console.log(CWResponse.dt)
+                var currentTime = new Date(CWResponse.dt*1000)
+                                
+                console.log(currentTime);
+
+                //Icon
+
+                var icon2 = CWResponse.weather[0].icon;
+                console.log(icon);
+                imageIcon4 = "http://openweathermap.org/img/w/"+icon2+".png" 
+                imageIcon5 =  $("<img>")
+                imageIcon5.attr("src",imageIcon4);
+                console.log(imageIcon5);
+
+                //Current Weather
+
+                var currentWeather = $("<div>") 
+                var unitWeatherDefault2 = [[CWResponse.main.temp * (9/5)]- 459.67]
+                console.log(precise(unitWeatherDefault2));
+                currentWeather.text(precise(unitWeatherDefault2));
+                console.log(currentWeather);
+
+                //Description
+
+                var description2 = CWResponse.weather[0].description
+                console.log(description2);
+
+                //Wind Direction
+
+                console.log("Wind Direction" + CWResponse.wind.deg);
+                var windDirection2 = CWResponse.wind.deg;
+                var quad1a = 0
+                var quad1b = 90
+                var quad2a = 91
+                var quad2b = 180
+                var quad3a = 181
+                var quad3b = 270
+                var quad4a = 271
+                var quad4b = 360
+             
+                if( windDirection2 >= quad1a && windDirection2 <= quad1b){
+                        $("#windDirection2").append("WD: Northeast at " + precise(windDirection2) + "degrees");
+                }
+                else if( windDirection2 >= quad2a && windDirection2 <= quad2b){
+                        $("#windDirection2").append("WD: Northwest at " + precise(windDirection2) + "degrees");
+                }
+                else if( windDirection2 >= quad3a && windDirection2 <= quad3b){
+                        $("#windDirection2").append("WD: Southwest at " + precise(windDirection2) + "degrees");
+                }
+                else if( windDirection2 >= quad4a && windDirection2 <= quad4b){
+                        $("#windDirection2").append("WD: Southeast at " + precise(windDirection2) + "degrees");
+                }
+                
+               
+                console.log(windDirection2);
+
+                //Humidity
+                console.log(CWResponse.main.humidity);
+                
+                // Sea Level
+                console.log(CWResponse.main.sea_level); 
+
+                $("#time2").append(currentTime);
+                $("#icon2").append(imageIcon5);
+                $("#description2").append(description2);
+                $("#temp2").append("Current Temperature " + currentWeather.text() + "°F")
+                console.log(currentWeather);
+                $("#windSpeed2").append("Wind Speed at " + CWResponse.wind.speed + "M/S")
+
+
+
+        })
+        
         console.log(queryURL);
 
         $.ajax({
