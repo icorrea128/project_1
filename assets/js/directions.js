@@ -16,6 +16,7 @@ var placesService;
 
 var map;
 
+var startTime;
 var routes;
 
 // BEGIN PUBLIC API
@@ -55,12 +56,13 @@ function initMap() { // eslint-disable-line no-unused-vars
 
 /**
  * Calculate a route, and display it on the map.
- * @param {number} startLat - latitude of starting position
- * @param {number} startLong - longitude of starting position
- * @param {number} endLat - latitude of ending position
- * @param {number} endLong - longitude of ending position
- * @param {Date} time - start time of trip
- * @param {setPathCallback} - Callback. Don't use more functions until this returns
+ * @param {Object} inputs
+ * @param {number} inputs.startLat - latitude of starting position
+ * @param {number} inputs.startLong - longitude of starting position
+ * @param {number} inputs.endLat - latitude of ending position
+ * @param {number} inputs.endLong - longitude of ending position
+ * @param {Date}   inputs.time - start time of trip
+ * @param {setPathCallback} inputs.callback - Callback. Don't use more functions until this returns
  */
 function setPath(inputs) { // eslint-disable-line no-unused-vars
   $.each(['startLat', 'startLong', 'endLat', 'endLong', 'time'], function(_, eachName) {
@@ -69,6 +71,8 @@ function setPath(inputs) { // eslint-disable-line no-unused-vars
       return;
     }
   });
+
+  startTime = inputs.time;
 
   calcRoute({
     start: new google.maps.LatLng(inputs.startLat, inputs.startLong),
@@ -79,21 +83,20 @@ function setPath(inputs) { // eslint-disable-line no-unused-vars
 }
 
 /**
- * @callback addMarkersCallback
- */
-
-/**
  * Manually add a marker, specified by latitude and longitude.
- * @param {string} name - The name of the place.
- * @param {number} lat - Latitude of the place.
- * @param {number} long - Longitude of the place.
- * @param {string} [address] - Address of the place. Optional.
+ * @param {Object} inputs
+ * @param {string} inputs.name - The name of the place.
+ * @param {number} inputs.lat - Latitude of the place.
+ * @param {number} inputs.long - Longitude of the place.
+ * @param {string} [inputs.address] - Address of the place. Optional.
+ * @param {string} [inputs.markerImage] - Marker image. Optional.
  */
 function addMarker(inputs) { // eslint-disable-line no-unused-vars
   makeMarker({
     name: inputs.name,
     location: new google.maps.LatLng({ lat: inputs.lat, lng: inputs.long }),
-    address: inputs.address
+    address: inputs.address,
+    markerImage: inputs.markerImage
   });
 }
 
@@ -101,9 +104,11 @@ function addMarker(inputs) { // eslint-disable-line no-unused-vars
  * Add markers for places, searching either by name or by type.
  * Supports types listed here:
  * https://developers.google.com/places/supported_types
- * @param {string} [name] - Search for places by a name.
- * @param {string} [type] - Search for places of a certain type. Ignored if a name is specified.
- * @param {number} radius - Search at this distance from the route (in meters)
+ * @param {Object} inputs
+ * @param {string} [inputs.name] - Search for places by a name.
+ * @param {string} [inputs.type] - Search for places of a certain type. Ignored if a name is specified.
+ * @param {number} inputs.radius - Search at this distance from the route (in meters)
+ * @param {string} [inputs.markerImage] - Marker image. Optional.
  */
 function addMarkers(inputs) { // eslint-disable-line no-unused-vars
   var route = routes[0];
@@ -121,33 +126,180 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
     if (!interestingIds.includes(id)) {
       interestingIds.push(id);
 
-      makeMarkerForPlace(place);
+      makeMarkerForPlace(place, inputs.markerImage);
     }
   };
 
-  var lastQueryDistance = 0;
+  var totalDistance = totalTimeAndDistance(route).totalDistance;
 
-  $.each(route.legs, function(_, eachLeg) {
-    $.each(eachLeg.steps, function(__, eachStep) {
-      lastQueryDistance += eachStep.distance.value;
+  function addAtDistance(dist) {
+    var pos = getPositionAtDistance(dist);
+    var latLng = new google.maps.LatLng(pos.lat, pos.long);
+    findInterestingPlaces(latLng, inputs, addInterestingPlace);
+  }
 
-      if (lastQueryDistance > inputs.radius) {
-        findInterestingPlaces(eachStep.start_location, inputs, addInterestingPlace);
-        lastQueryDistance = 0;
-      }
-    });
-  });
+  for (var distance = 0; distance < totalDistance; distance += inputs.radius) {
+    addAtDistance(distance);
+  }
 
   var endLocation = route.legs[route.legs.length - 1].end_location;
   findInterestingPlaces(endLocation, inputs, addInterestingPlace);
 }
 
+/**
+ * Return type for getPositionAtTime()
+ * @typedef {Object} Position
+ * @param {number} lat - latitude
+ * @param {number} long - longitude
+ */
+
+/**
+ * Get the estimated latitude and longitude at a particular time along the route.
+ * @param {Date} time - the time to search for, as a JavaScript Date
+ * @return {Position}
+ */
+function getPositionAtTime(time) { // eslint-disable-line no-unused-vars
+  var route = routes[0];
+
+  if (!route || !startTime) {
+    logError('getPositionAtTime() called without route being charted!');
+    return null;
+  }
+
+  if (!route.legs || (route.legs.length === 0)) {
+    logError('empty route!');
+    return null;
+  }
+
+  var routeStart = route.legs[0].start_location;
+  var routeEnd = route.legs[route.legs.length - 1].end_location;
+
+  if (time < startTime) {
+    return { lat: routeStart.lat(), long: routeStart.lng() };
+  }
+
+  var legEndTime = startTime;
+  var position;
+
+  $.each(route.legs, function(_, eachLeg) {
+    var duration = eachLeg.duration.value;
+    var legStartTime = legEndTime;
+    legEndTime = new Date(legStartTime.getTime() + duration * 1000);
+
+    if (time <= legEndTime) {
+      var stepEndTime = legStartTime;
+
+      $.each(eachLeg.steps, function(__, eachStep) {
+        var stepDuration = eachStep.duration.value;
+        var stepStartTime = stepEndTime;
+        stepEndTime = new Date(stepStartTime.getTime() + stepDuration * 1000);
+
+        if (time <= stepEndTime) {
+          var seconds = (time.getTime() - stepStartTime.getTime()) / 1000;
+          var fraction = seconds / stepDuration;
+
+          var stepStart = eachStep.start_location;
+          var stepEnd = eachStep.end_location;
+
+          var dLat = (stepEnd.lat() - stepStart.lat()) * fraction;
+          var dLng = (stepEnd.lng() - stepStart.lng()) * fraction;
+
+          position = { lat: stepStart.lat() + dLat, long: stepStart.lng() + dLng };
+        }
+      });
+
+      if (!position) {
+        var loc = eachLeg.end_location;
+        position = { lat: loc.lat(), long: loc.lng() };
+      }
+
+      return false;
+    }
+
+    return true;
+  });
+
+  if (!position) {
+    position = { lat: routeEnd.lat(), long: routeEnd.lng() };
+  }
+
+  return position;
+}
+
+/**
+ * Get the estimated latitude and longitude after a specified distance has been travelled.
+ * @param {number} distance - Distance travelled in meters
+ * @return {Position}
+ */
+function getPositionAtDistance(distance) { // eslint-disable-line no-unused-vars
+  var route = routes[0];
+
+  if (!route || !startTime) {
+    logError('getPositionAtDistance() called without route being charted!');
+    return null;
+  }
+
+  if (!route.legs || (route.legs.length === 0)) {
+    logError('empty route!');
+    return null;
+  }
+
+  var legEndDistance = 0;
+  var position;
+
+  $.each(route.legs, function(_, eachLeg) {
+    var legLength = eachLeg.distance.value;
+    var legStartDistance = legEndDistance;
+    legEndDistance = legStartDistance + legLength;
+
+    if (distance <= legEndDistance) {
+      var stepEndDistance = legStartDistance;
+
+      $.each(eachLeg.steps, function(__, eachStep) {
+        var stepLength = eachStep.distance.value;
+        var stepStartDistance = stepEndDistance;
+        stepEndDistance = stepStartDistance + stepLength;
+
+        if (distance <= stepEndDistance) {
+          var length = distance - stepStartDistance;
+          var fraction = length / stepLength;
+
+          var stepStart = eachStep.start_location;
+          var stepEnd = eachStep.end_location;
+
+          var dLat = (stepEnd.lat() - stepStart.lat()) * fraction;
+          var dLng = (stepEnd.lng() - stepStart.lng()) * fraction;
+
+          position = { lat: stepStart.lat() + dLat, long: stepStart.lng() + dLng };
+        }
+      });
+
+      if (!position) {
+        var loc = eachLeg.end_location;
+        position = { lat: loc.lat(), long: loc.lng() };
+      }
+
+      return false;
+    }
+
+    return true;
+  });
+
+  if (!position) {
+    var loc = route.legs[route.legs.length - 1].end_location;
+    position = { lat: loc.lat(), long: loc.lng() };
+  }
+
+  return position;
+}
+
 // END PUBLIC API
 
-function makeMarkerForPlace(place) {
+function makeMarkerForPlace(place, image) {
   makeMarker({
     name: place.name,
     location: place.geometry.location,
+    markerImage: image
   });
 }
 
@@ -155,7 +307,8 @@ function makeMarker(inputs) {
   var marker = new google.maps.Marker({
     map: map,
     title: inputs.name,
-    position: inputs.location
+    position: inputs.location,
+    icon: inputs.markerImage
   });
 
   marker.addListener('click', function() {
@@ -204,21 +357,20 @@ function calcRoute(inputs) {
       return;
     }
 
-    var totalDistance = 0; // in meters
-    var totalTime = 0; // in seconds
-
-    var legs = routes[0].legs;
-
-    $.each(legs, function(_, eachLeg) {
-      var distance = eachLeg.distance.value;
-      totalDistance += distance;
-
-      var time = eachLeg.duration.value;
-      totalTime += time;
-    });
-
-    inputs.callback({ totalTime: totalTime, totalDistance: totalDistance });
+    inputs.callback(totalTimeAndDistance(routes[0]));
   });
+}
+
+function totalTimeAndDistance(route) {
+  var totalDistance = 0; // in meters
+  var totalTime = 0; // in seconds
+
+  $.each(route.legs, function(_, eachLeg) {
+    totalDistance += eachLeg.distance.value;
+    totalTime += eachLeg.duration.value;
+  });
+
+  return { totalTime: totalTime, totalDistance: totalDistance };
 }
 
 function findInterestingPlaces(loc, inputs, closure) {
