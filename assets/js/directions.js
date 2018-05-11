@@ -84,22 +84,40 @@ function setPath(inputs) { // eslint-disable-line no-unused-vars
 }
 
 /**
+ * @typedef {Object} Point
+ * @param {number} x
+ * @param {number} y
+ */
+
+/**
+ * @typedef {Object} Size
+ * @param {number} width
+ * @param {number} height
+ */
+
+/**
  * Manually add a marker, specified by latitude and longitude.
  * @param {Object} inputs
  * @param {string} inputs.name - The name of the place.
  * @param {number} inputs.lat - Latitude of the place.
  * @param {number} inputs.long - Longitude of the place.
  * @param {string} [inputs.address] - Address of the place. Optional.
- * @param {string} [inputs.markerImage] - Marker image. Optional.
+ * @param {string} [inputs.markerImageURL] - Marker image URL. Optional.
+ * @param {Size} [inputs.markerImageSize] - Original size of marker image. Optional.
+ * @param {Size} [inputs.markerImageScaledSize] - Size of marker image as it should appear on the map. Optional.
  * @param {string} [inputs.infoIcon] - Icon for Info window. Optional.
+ * @param {string} [inputs.infoIconClass] - CSS class for icons in info window. Optional.
  */
 function addMarker(inputs) { // eslint-disable-line no-unused-vars
   makeMarker({
     name: inputs.name,
     location: new google.maps.LatLng({ lat: inputs.lat, lng: inputs.long }),
     address: inputs.address,
-    markerImage: inputs.markerImage,
-    infoIcon: inputs.infoIcon
+    markerImageURL: inputs.markerImageURL,
+    markerImageSize: inputs.markerImageSize,
+    markerImageScaledSize: inputs.markerImageScaledSize,
+    infoIcon: inputs.infoIcon,
+    infoIconClass: inputs.infoIconClass
   });
 }
 
@@ -111,7 +129,11 @@ function addMarker(inputs) { // eslint-disable-line no-unused-vars
  * @param {string} [inputs.name] - Search for places by a name.
  * @param {string} [inputs.type] - Search for places of a certain type. Ignored if a name is specified.
  * @param {number} inputs.radius - Search at this distance from the route (in meters)
- * @param {string} [inputs.markerImage] - Marker image. Optional.
+ * @param {string} [inputs.markerImageURL] - Marker image. Optional.
+ * @param {Size} [inputs.markerImageSize] - Original size of marker image. Optional.
+ * @param {Size} [inputs.markerImageScaledSize] - Size of marker image as it should appear on the map. Optional.
+ * @param {string} [inputs.infoIcon] - Icon for Info window. Optional.
+ * @param {string} [inputs.infoIconClass] - CSS class for icons in info window. Optional.
  */
 function addMarkers(inputs) { // eslint-disable-line no-unused-vars
   var route = routes[0];
@@ -129,7 +151,7 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
     if (!interestingIds.includes(id)) {
       interestingIds.push(id);
 
-      makeMarkerForPlace(place, inputs.markerImage);
+      makeMarkerForPlace(place, inputs);
     }
   };
 
@@ -298,11 +320,15 @@ function getPositionAtDistance(distance) { // eslint-disable-line no-unused-vars
 
 // END PUBLIC API
 
-function makeMarkerForPlace(place, image) {
+function makeMarkerForPlace(place, inputs) {
   makeMarker({
     name: place.name,
     location: place.geometry.location,
-    markerImage: image
+    markerImageURL: inputs.markerImageURL,
+    markerImageSize: inputs.markerImageSize,
+    markerImageScaledSize: inputs.markerImageScaledSize,
+    infoIcon: inputs.infoIcon,
+    infoIconClass: inputs.infoIconClass
   });
 }
 
@@ -310,15 +336,38 @@ function makeMarker(inputs) {
   var marker = new google.maps.Marker({
     map: map,
     title: inputs.name,
-    position: inputs.location,
-    icon: inputs.markerImage
+    position: inputs.location
   });
+
+  if (inputs.markerImageURL) {
+    var icon = { origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(0, 0), url: inputs.markerImageURL };
+
+    if (inputs.markerImageSize) {
+      var size = inputs.markerImageSize;
+      icon.size = new google.maps.Size(size.width, size.height);
+    }
+
+    if (inputs.markerImageScaledSize) {
+      var sSize = inputs.markerImageScaledSize;
+      icon.scaledSize = new google.maps.Size(sSize.width, sSize.height);
+    }
+
+    marker.setIcon(icon);
+  }
 
   marker.addListener('click', function() {
     var content = $('<div class="map-info-content">');
 
     if (inputs.infoIcon) {
-      content.append($('<img>').attr('src', inputs.infoIcon).attr('alt', inputs.name).addClass('info-place-icon'));
+      var infoIcon = $('<img>').attr('src', inputs.infoIcon).attr('alt', inputs.name).addClass('info-place-icon');
+
+      if (inputs.infoIconClass) {
+        infoIcon.addClass(inputs.infoIconClass);
+      }
+
+      content.append(infoIcon);
+    } else if (inputs.infoIconClass) {
+      content.append($('<i>').addClass(inputs.infoIconClass));
     }
 
     content.append($('<h1 class="info-place-name">').text(inputs.name));
