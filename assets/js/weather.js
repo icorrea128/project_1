@@ -2,20 +2,36 @@
 
 
 //Version 1 Open Weather Map
-var input = {
-        lat:41.85,
-        lon:-87.65
+
+var inputs = {};
+
+function parseInput() {
+        var queryString = window.location.href;
+        var argStart = queryString.indexOf('?');
+        var argString = queryString.substring(argStart + 1);
+        var args = argString.split('&');
+        $.each(args, function(_, eachArg) {
+                var sep = eachArg.indexOf('=');
+                var key = eachArg.substring(0, sep);
+                var value = eachArg.substring(sep + 1);
+                console.log('key: ' + key + ', value = ' + value);
+                inputs[key]=value;
+        });
 }
-function weatherData (params){
+parseInput();
+
+console.log(inputs);
+
+function weatherData (){
         // var lat = params.latitude;
         // var lon = params.longitude;
         // var time = params.time;
         
         
         var api_key = "8ed3b9d51c85a6de3c56df1582820966";
-        var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + input.lat + "&lon=" + input.lon + "&APPID=" + api_key; 
+        var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + inputs.startLat + "&lon=" + inputs.startLong + "&APPID=" + api_key; 
         
-        var queryURLCurrentWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + input.lat + "&lon=" + input.lon + "&APPID=" + api_key;
+        var queryURLCurrentWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + inputs.startLat + "&lon=" + inputs.startLong + "&APPID=" + api_key;
         $.ajax({
                 url:queryURLCurrentWeather,
                 method:"GET"
@@ -81,7 +97,7 @@ function weatherData (params){
                 $("#time2").append(currentTime);
                 $("#icon2").append(imageIcon5);
                 $("#description2").append(description2);
-                $("#temp2").append("Current Temperature " + currentWeather.text() + "°F")
+                $("#temp2").append("Current Temperature " + currentWeather.text() + "F")
                 console.log(currentWeather);
                 $("#windSpeed2").append("Wind Speed at " + CWResponse.wind.speed + "M/S")
         })
