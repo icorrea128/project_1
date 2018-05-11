@@ -42,14 +42,24 @@ $(document).ready(function(){
 
     $('#AddrSubmit').click(function(event){
         event.preventDefault();
+      
+      if (!startLocation) {
+        $('#startaddr').css({ "background-color": 'red' });
+      }
+      
+      if (!endLocation) {
+        $('#endaddr').css({ "background-color": 'red' });
+      }
+      
+      if (!startLocation || !endLocation) {
+        return;
+      }
 
-        console.log(startLocation);
-        console.log(endLocation);
-        window.location.href = 'MapsWeather.html?' + 'startLat=' + startLocation.lat + '&startLong=' + startLocation.long + '&endLat=' + endLocation.lat + '&endLong' + endLocation.long;
+        window.location.href = 'MapsWeather.html?' + 'startLat=' + startLocation.lat + '&startLong=' + startLocation.long + '&endLat=' + endLocation.lat + '&endLong' + endLocation.long + '&time=' + $('#time').val();
         return false;
-
-
-        $("#addrinput").on( "keydown", function( event ) {
+    });
+  
+    $("#addrinput").on( "keydown", function( event ) {
             $(event.delegateTarget ).css( "background-color", "transparent");
             $("#startaddr").css({"background-color": "blue", "color":"white"} );
             $("#endaddr").css({"background-color": "blue", "color":"white"} );
@@ -58,6 +68,8 @@ $(document).ready(function(){
             // $('document.body').css("background-color","white");
 
         });
-
-    });
+    
+    var utcDate = new Date();
+    var date = new Date(utcDate.getTime() - utcDate.getTimezoneOffset()*60*1000);
+    $('#time').val(date.toJSON().slice(0,19));
 });
