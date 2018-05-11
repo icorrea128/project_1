@@ -122,6 +122,15 @@ function addMarker(inputs) { // eslint-disable-line no-unused-vars
 }
 
 /**
+ * @callback addMarkersCallback
+ * @param {string} name
+ * @param {Array} types
+ * @param {string} address
+ * @param {number} lat
+ * @param {number} long
+ */
+
+/**
  * Add markers for places, searching either by name or by type.
  * Supports types listed here:
  * https://developers.google.com/places/supported_types
@@ -134,6 +143,7 @@ function addMarker(inputs) { // eslint-disable-line no-unused-vars
  * @param {Size} [inputs.markerImageScaledSize] - Size of marker image as it should appear on the map. Optional.
  * @param {string} [inputs.infoIcon] - Icon for Info window. Optional.
  * @param {string} [inputs.infoIconClass] - CSS class for icons in info window. Optional.
+ * @param {addMarkersCallback} [inputs.callback] - called for each search result. Optional.
  */
 function addMarkers(inputs) { // eslint-disable-line no-unused-vars
   var route = routes[0];
@@ -330,6 +340,16 @@ function makeMarkerForPlace(place, inputs) {
     infoIcon: inputs.infoIcon,
     infoIconClass: inputs.infoIconClass
   });
+
+  if (inputs.callback) {
+    inputs.callback({
+      name: place.name,
+      types: place.types,
+      address: place.vicinity,
+      lat: place.geometry.location.lat(),
+      long: place.geometry.location.lng()
+    });
+  }
 }
 
 function makeMarker(inputs) {
