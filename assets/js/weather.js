@@ -29,7 +29,7 @@ function weatherData (){
         
         
         var api_key = "8ed3b9d51c85a6de3c56df1582820966";
-        var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + inputs.startLat + "&lon=" + inputs.startLong + "&APPID=" + api_key; 
+        var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + inputs.endLat + "&lon=" + inputs.endLong + "&APPID=" + api_key; 
         
         var queryURLCurrentWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + inputs.startLat + "&lon=" + inputs.startLong + "&APPID=" + api_key;
         $.ajax({
@@ -94,7 +94,7 @@ function weatherData (){
                 
                 // Sea Level
                 console.log(CWResponse.main.sea_level); 
-                $("#time2").append(currentTime);
+                $("#time2").append("Start Location");
                 $("#icon2").append(imageIcon5);
                 $("#description2").append(description2);
                 $("#temp2").append("Current Temperature " + currentWeather.text() + "F")
@@ -169,10 +169,10 @@ function weatherData (){
                 
                 // Sea Level
                 console.log(response.list[0].main.sea_level); 
-                $("#time").append(timeOfWeather);
+                $("#time").append("End Location");
                 $("#icon").append(imageIcon1);
                 $("#description").append(description0);
-                $("#temp").append("Current Temperature " + forecast0.text() + "°F")
+                $("#temp").append("Current Temperature " + forecast0.text() + "F")
                 console.log(forecast0);
                 $("#windSpeed").append("Wind Speed at " + response.list[0].wind.speed + "M/S")
                
@@ -233,7 +233,7 @@ function weatherData (){
                 $("#time1").append(timeOfWeather);
                 $("#icon1").append(imageIcon3);
                 $("#description1").append(description1);
-                $("#temp1").append("Current Temperature " + forecast1.text() + "°F")
+                $("#temp1").append("Current Temperature " + forecast1.text() + "F")
                 console.log(forecast1);
                 $("#windSpeed1").append("Wind Speed at " + response.list[1].wind.speed + "M/S")
         });

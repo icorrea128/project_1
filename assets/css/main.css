@@ -98,9 +98,11 @@ h1{
   height: 200px;
 }
 
-#column1 {
+#column1, #column2 {
     border:solid;
-    background-color:gold;
+    background-color:#0808b5;
+    color:white;
+    padding:10px;
 }
 
 #time2, #description2, #temp2, #windSpeed2, #windDirection2 {
