@@ -17,13 +17,17 @@ $(document).ready(function(){
 
         window.location.href = 'MapsWeather.html';
     return false;
-
-        // $("body,html").animate({
-        // scrollTop:$("#" + $(this).data('value')).offset().top
-        // },1000)
-
-        // $("#" + $(this).data('value')).height($(window).height());
-        // console.log($('#startaddr').val());
+/**
+ * Calculate a route, and display it on the map.
+ * @param {number} startLat - latitude of starting position
+ * @param {number} startLong - longitude of starting position
+ * @param {number} endLat - latitude of ending position
+ * @param {number} endLong - longitude of ending position
+ * @param {Date} time - start time of trip
+ * @param {setPathCallback} - Callback. Don't use more functions until this returns
+ */
+    
+        
     })
 /* autopopulate the address logic*/
     $("#startaddr").geocomplete({

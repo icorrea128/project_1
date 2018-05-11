@@ -97,3 +97,16 @@ h1{
   width: 200px;
   height: 200px;
 }
+.map-info-bubble{
+    font-family: sans-serif;
+    font-size: 10px
+}
+.info-place-name{
+    font-family: sans-serif;
+    font-size: 14px
+}
+
+.text_input{
+    font-family: sans-serif;
+    font-size: 14px
+}
