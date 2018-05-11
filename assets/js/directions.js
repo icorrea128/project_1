@@ -19,6 +19,9 @@ var map;
 var startTime;
 var routes;
 
+var savedSearches = {};
+var nextID = 0;
+
 // BEGIN PUBLIC API
 
 /*
@@ -107,8 +110,11 @@ function setPath(inputs) { // eslint-disable-line no-unused-vars
  * @param {Size} [inputs.markerImageScaledSize] - Size of marker image as it should appear on the map. Optional.
  * @param {string} [inputs.infoIcon] - Icon for Info window. Optional.
  * @param {string} [inputs.infoIconClass] - CSS class for icons in info window. Optional.
+ * @param {number} Returns a number identifying this marker, which can be used later on to hide or show it.
  */
 function addMarker(inputs) { // eslint-disable-line no-unused-vars
+  var id = nextID++;
+
   makeMarker({
     name: inputs.name,
     location: new google.maps.LatLng({ lat: inputs.lat, lng: inputs.long }),
@@ -117,8 +123,11 @@ function addMarker(inputs) { // eslint-disable-line no-unused-vars
     markerImageSize: inputs.markerImageSize,
     markerImageScaledSize: inputs.markerImageScaledSize,
     infoIcon: inputs.infoIcon,
-    infoIconClass: inputs.infoIconClass
+    infoIconClass: inputs.infoIconClass,
+    id: id
   });
+
+  return id;
 }
 
 /**
@@ -144,13 +153,15 @@ function addMarker(inputs) { // eslint-disable-line no-unused-vars
  * @param {string} [inputs.infoIcon] - Icon for Info window. Optional.
  * @param {string} [inputs.infoIconClass] - CSS class for icons in info window. Optional.
  * @param {addMarkersCallback} [inputs.callback] - called for each search result. Optional.
+ * @return {number} Returns a number identifying this search query, which can be used later on to quickly hide or show the results.
  */
 function addMarkers(inputs) { // eslint-disable-line no-unused-vars
   var route = routes[0];
+  var searchID = nextID++;
 
   if (!route) {
     logError('addMarkers called before any routes have been mapped');
-    return;
+    return undefined;
   }
 
   var interestingIds = [];
@@ -161,7 +172,7 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
     if (!interestingIds.includes(id)) {
       interestingIds.push(id);
 
-      makeMarkerForPlace(place, inputs);
+      makeMarkerForPlace(place, inputs, searchID);
     }
   };
 
@@ -179,6 +190,8 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
 
   var endLocation = route.legs[route.legs.length - 1].end_location;
   findInterestingPlaces(endLocation, inputs, addInterestingPlace);
+
+  return searchID;
 }
 
 /**
@@ -328,9 +341,45 @@ function getPositionAtDistance(distance) { // eslint-disable-line no-unused-vars
   return position;
 }
 
+/*
+ * Show markers previously added via addMarker() or addMarkers().
+ * @param {number} id - The id returned by addMarker() or addMarkers().
+ */
+function showMarkers(id) { // eslint-disable-line no-unused-vars
+  var search = savedSearches[id];
+
+  if (!search) {
+    return;
+  }
+
+  search.shown = true;
+
+  $.each(search.markers, function(_, eachMarker) {
+    eachMarker.setMap(map);
+  });
+}
+
+/*
+ * Hide markers previously added via addMarker() or addMarkers().
+ * @param {number} id - The id returned by addMarker() or addMarkers().
+ */
+function hideMarkers(id) { // eslint-disable-line no-unused-vars
+  var search = savedSearches[id];
+
+  if (!search) {
+    return;
+  }
+
+  search.shown = false;
+
+  $.each(search.markers, function(_, eachMarker) {
+    eachMarker.setMap(null);
+  });
+}
+
 // END PUBLIC API
 
-function makeMarkerForPlace(place, inputs) {
+function makeMarkerForPlace(place, inputs, id) {
   makeMarker({
     name: place.name,
     location: place.geometry.location,
@@ -338,7 +387,8 @@ function makeMarkerForPlace(place, inputs) {
     markerImageSize: inputs.markerImageSize,
     markerImageScaledSize: inputs.markerImageScaledSize,
     infoIcon: inputs.infoIcon,
-    infoIconClass: inputs.infoIconClass
+    infoIconClass: inputs.infoIconClass,
+    id: id
   });
 
   if (inputs.callback) {
@@ -353,11 +403,20 @@ function makeMarkerForPlace(place, inputs) {
 }
 
 function makeMarker(inputs) {
+  var currentSearch = savedSearches[inputs.id];
+
+  if (!currentSearch) {
+    currentSearch = { shown: true, markers: [] };
+    savedSearches[inputs.id] = currentSearch;
+  }
+
   var marker = new google.maps.Marker({
-    map: map,
+    map: currentSearch.shown ? map : null,
     title: inputs.name,
     position: inputs.location
   });
+
+  currentSearch.markers.push(marker);
 
   if (inputs.markerImageURL) {
     var icon = { origin: new google.maps.Point(0, 0), anchor: new google.maps.Point(0, 0), url: inputs.markerImageURL };

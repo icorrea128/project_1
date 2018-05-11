@@ -15,7 +15,16 @@
   <script src="assets/js/infobubble.js"></script>
   <script src="assets/js/directions.js"></script>
   <div id="bikemap"></div>
+  <button id="showStores">Show Stores</button>
+  <button id="hideStores">Hide Stores</button>
   <script>
+    var convenienceStores;
+    
+    $(document).ready( () => {
+      $('#showStores').on('click', showStores);
+      $('#hideStores').on('click', hideStores);
+    });
+    
     function myInit() {
       initMap();
       setPath({
@@ -48,7 +57,8 @@
             markerImageScaledSize: { width: 24, height: 24 },
             infoIconClass: 'FOO',
           });
-          addMarkers({
+          
+          convenienceStores = addMarkers({
             type: "convenience_store",
             radius: 480,
             infoIconClass: 'BAR',
@@ -56,9 +66,17 @@
             callback: function(foo) {
               console.log(foo);
             }
-          })
+          });
         }
       });
+    }
+    
+    function showStores() {
+      showMarkers(convenienceStores);
+    }
+    
+    function hideStores() {
+      hideMarkers(convenienceStores);
     }
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiPtzBkpdiRbstWywr5Vo2NPg1AiGUYVY&callback=myInit&libraries=places"
