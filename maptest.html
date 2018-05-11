@@ -14,6 +14,7 @@
   <script src="https://momentjs.com/downloads/moment.min.js"></script>
   <script src="assets/js/infobubble.js"></script>
   <script src="assets/js/directions.js"></script>
+  <script src="assets/js/weather.js"></script>
   <div id="bikemap"></div>
   <button id="showStores">Show Stores</button>
   <button id="hideStores">Hide Stores</button>
@@ -23,6 +24,8 @@
     $(document).ready( () => {
       $('#showStores').on('click', showStores);
       $('#hideStores').on('click', hideStores);
+
+      weatherData();
     });
     
     function myInit() {
@@ -41,32 +44,32 @@
           var middle = getPositionAtDistance(8474.5);
 
           console.log(middle);
-          addMarker({
-            name: 'The Middle',
-            lat: middle.lat,
-            long: middle.long
-          });
-
-          addMarker({
-            name: 'Someplace Wet',
-            lat: 42.064730,
-            long: -87.670035,
-            address: '123 Middle Of Lake Michigan',
-            markerImageURL: 'http://mtcharlestonwaterco.com/generic_water.png',
-            markerImageSize: { width: 256, height: 256 },
-            markerImageScaledSize: { width: 24, height: 24 },
-            infoIconClass: 'FOO',
-          });
+//          addMarker({
+//            name: 'The Middle',
+//            lat: middle.lat,
+//            long: middle.long
+//          });
+//
+//          addMarker({
+//            name: 'Someplace Wet',
+//            lat: 42.064730,
+//            long: -87.670035,
+//            address: '123 Middle Of Lake Michigan',
+//            markerImageURL: 'http://mtcharlestonwaterco.com/generic_water.png',
+//            markerImageSize: { width: 256, height: 256 },
+//            markerImageScaledSize: { width: 24, height: 24 },
+//            infoIconClass: 'FOO',
+//          });
           
-          convenienceStores = addMarkers({
-            type: "convenience_store",
-            radius: 480,
-            infoIconClass: 'BAR',
-            markerImageClass: 'QUX',
-            callback: function(foo) {
-              console.log(foo);
-            }
-          });
+//          convenienceStores = addMarkers({
+//            type: "convenience_store",
+//            radius: 480,
+//            infoIconClass: 'BAR',
+//            markerImageClass: 'QUX',
+//            callback: function(foo) {
+//              console.log(foo);
+//            }
+//          });
         }
       });
     }

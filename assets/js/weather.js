@@ -1,246 +1,205 @@
+/* eslint-env browser, jquery */
+
 //Integrate Inputs as Latitude and Longitude
 
 
 //Version 1 Open Weather Map
 
+var apiKey = "8ed3b9d51c85a6de3c56df1582820966";
 var inputs = {};
 
+// BEGIN PUBLIC API
+
+function sunriseAndSunset(params) { // eslint-disable-line no-unused-vars
+  currentWeather({
+    lat: params.lat,
+    long: params.long,
+    callback: function(response) {
+      params.callback({
+        sunrise: new Date(response.sys.sunrise * 1000),
+        sunset: new Date(response.sys.sunset * 1000)
+      });
+    }
+  });
+}
+
+function currentWeather(params) {
+  var queryURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + params.lat + "&lon=" + params.long + "&APPID=" + apiKey;
+
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  }).then(function(response) {
+    params.callback(response);
+  });
+}
+
+function weatherAtTime(params) { // eslint-disable-line no-unused-vars
+  currentWeather({
+    lat: params.lat,
+    long: params.long,
+    callback: function(currentResponse) {
+      var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + params.lat + "&lon=" + params.long + "&APPID=" + apiKey;
+
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function(forecastResponse) {
+        params.callback(getWeatherAtTime(params.time, currentResponse, forecastResponse));
+      });
+    }
+  });
+}
+
+function generateWeatherListItem(weather) { // eslint-disable-line no-unused-vars
+  //Significant Figures
+  function precise(x) {
+    if (x === 0) {
+      return 0;
+    } else {
+      return Number.parseFloat(x).toPrecision(4);
+    }
+  }
+
+  var fahrenheit = precise(weather.temp * 9 / 5 - 459.67) + '°F';
+  var windMPH = precise(weather.windSpeed / 1609.344 * 3600) + ' mph';
+  var windDirection = weather.windDir;
+  var windDirName = function() {
+    if (windDirection <= 22.5) {
+      return "N";
+    } else if (windDirection <= 67.5) {
+      return "NE";
+    } else if (windDirection <= 112.5) {
+      return "E";
+    } else if (windDirection <= 157.5) {
+      return "SE";
+    } else if (windDirection <= 202.5) {
+      return "S";
+    } else if (windDirection <= 247.5) {
+      return "SW";
+    } else if (windDirection <= 292.5) {
+      return "W";
+    } else if (windDirection <= 337.5) {
+      return "NW";
+    } else {
+      return "N";
+    }
+  }();
+
+  var windDirString = windDirName + ' at ' + precise(weather.windDir) + '°';
+
+  var precip = precise(weather.precip / 25.4) + ' inches over 3-hour period';
+
+  var li = $('<li>');
+
+  li.append($('<div>').addClass('weather-time').text(weather.time.toLocaleTimeString()));
+  li.append($('<img>').addClass('weather-icon').attr('src', weather.icon));
+  li.append($('<div>').addClass('weather-description').text(weather.description));
+  li.append($('<div>').addClass('weather-temp').text(fahrenheit));
+  li.append($('<div>').addClass('weather-wind-speed').text(windMPH));
+  li.append($('<div>').addClass('weather-wind-direction').text(windDirString));
+  li.append($('<div>').addClass('weather-precip').text(precip));
+
+  return li;
+}
+
+// END PUBLIC API
+
 function parseInput() {
-        var queryString = window.location.href;
-        var argStart = queryString.indexOf('?');
-        var argString = queryString.substring(argStart + 1);
-        var args = argString.split('&');
-        $.each(args, function(_, eachArg) {
-                var sep = eachArg.indexOf('=');
-                var key = eachArg.substring(0, sep);
-                var value = eachArg.substring(sep + 1);
-                console.log('key: ' + key + ', value = ' + value);
-                inputs[key]=value;
-        });
+  var queryString = window.location.href;
+  var argStart = queryString.indexOf('?');
+  var argString = queryString.substring(argStart + 1);
+  var args = argString.split('&');
+  $.each(args, function(_, eachArg) {
+    var sep = eachArg.indexOf('=');
+    var key = eachArg.substring(0, sep);
+    var value = eachArg.substring(sep + 1);
+
+    inputs[key]=value;
+  });
 }
 parseInput();
 
-console.log(inputs);
+function getWeatherAtTime(time, currentResponse, forecastResponse) {
+  var rawTime = time.getTime();
 
-function weatherData (){
-        // var lat = params.latitude;
-        // var lon = params.longitude;
-        // var time = params.time;
-        
-        
-        var api_key = "8ed3b9d51c85a6de3c56df1582820966";
-        var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + inputs.startLat + "&lon=" + inputs.startLong + "&APPID=" + api_key; 
-        
-        var queryURLCurrentWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + inputs.startLat + "&lon=" + inputs.startLong + "&APPID=" + api_key;
-        $.ajax({
-                url:queryURLCurrentWeather,
-                method:"GET"
-        }).then(function(CWResponse){
-                console.log(CWResponse)
-                function precise(x) {
-                        return Number.parseFloat(x).toPrecision(3);
-                }
-                //Unix Time
-                console.log(CWResponse.dt)
-                var currentTime = new Date(CWResponse.dt*1000)
-                                
-                console.log(currentTime);
-                //Icon
-                var icon2 = CWResponse.weather[0].icon;
-                
-                imageIcon4 = "http://openweathermap.org/img/w/"+icon2+".png" 
-                imageIcon5 =  $("<img>")
-                imageIcon5.attr("src",imageIcon4);
-                console.log(imageIcon5);
-                //Current Weather
-                var currentWeather = $("<div>") 
-                var unitWeatherDefault2 = [[CWResponse.main.temp * (9/5)]- 459.67]
-                console.log(precise(unitWeatherDefault2));
-                currentWeather.text(precise(unitWeatherDefault2));
-                console.log(currentWeather);
-                //Description
-                var description2 = CWResponse.weather[0].description
-                
-                console.log(description2);
-                //Wind Direction
-                console.log("Wind Direction" + CWResponse.wind.deg);
-                var windDirection2 = CWResponse.wind.deg;
-                var quad1a = 0
-                var quad1b = 90
-                var quad2a = 91
-                var quad2b = 180
-                var quad3a = 181
-                var quad3b = 270
-                var quad4a = 271
-                var quad4b = 360
-             
-                if( windDirection2 >= quad1a && windDirection2 <= quad1b){
-                        $("#windDirection2").append("WD: Northeast at " + precise(windDirection2) + "degrees");
-                }
-                else if( windDirection2 >= quad2a && windDirection2 <= quad2b){
-                        $("#windDirection2").append("WD: Northwest at " + precise(windDirection2) + "degrees");
-                }
-                else if( windDirection2 >= quad3a && windDirection2 <= quad3b){
-                        $("#windDirection2").append("WD: Southwest at " + precise(windDirection2) + "degrees");
-                }
-                else if( windDirection2 >= quad4a && windDirection2 <= quad4b){
-                        $("#windDirection2").append("WD: Southeast at " + precise(windDirection2) + "degrees");
-                }
-                
-               
-                console.log(windDirection2);
-                //Humidity
-                console.log(CWResponse.main.humidity);
-                
-                // Sea Level
-                console.log(CWResponse.main.sea_level); 
-                $("#time2").append(currentTime);
-                $("#icon2").append(imageIcon5);
-                $("#description2").append(description2);
-                $("#temp2").append("Current Temperature " + currentWeather.text() + "F")
-                console.log(currentWeather);
-                $("#windSpeed2").append("Wind Speed at " + CWResponse.wind.speed + "M/S")
-        })
-        
-        console.log(queryURL);
-        $.ajax({
-                url:queryURL,
-                method:"GET"
-        }).then(function(response){
-                //Significant Figures
-                function precise(x) {
-                        return Number.parseFloat(x).toPrecision(3);
-                }
-                //Weather Forecast 39 h+1, h=0
-                   var weather = response.list
-                console.log(weather);
-                for(i=0;i<weather.length;i++){
-                        console.log(weather[i]);
-                }
-                //Current Time
-              
-               var currentTime = moment()
-               var timeOfWeather = response.list[0].dt_txt
-               
-                //Icon
-                var icon0 = response.list[0].weather[0].icon;
-                console.log(icon);
-                imageIcon0 = "http://openweathermap.org/img/w/"+icon0+".png" 
-                imageIcon1 =  $("<img>")
-                imageIcon1.attr("src",imageIcon0);
-                
-                //Description
-                var description0 = response.list[0].weather[0].description;
-                
-                //First Period Forecast
-                var forecast0 = $("<div>") 
-                var unitWeatherDefault = [[response.list[0].main.temp * (9/5)]- 459.67]
-                console.log(precise(unitWeatherDefault));
-                forecast0.text(precise(unitWeatherDefault));
-                //Wind Direction
-                console.log("Wind Direction" + response.list[0].wind.deg);
-                var windDirection = response.list[0].wind.deg
-                var quad1a = 0
-                var quad1b = 90
-                var quad2a = 91
-                var quad2b = 180
-                var quad3a = 181
-                var quad3b = 270
-                var quad4a = 271
-                var quad4b = 360
-             
-                if( windDirection >= quad1a && windDirection <= quad1b){
-                        $("#windDirection").append("WD: Northeast at " + precise(windDirection) + "degrees");
-                }
-                else if( windDirection >= quad2a && windDirection <= quad2b){
-                        $("#windDirection").append("WD: Northwest at " + precise(windDirection) + "degrees");
-                }
-                else if( windDirection >= quad3a && windDirection <= quad3b){
-                        $("#windDirection").append("WD: Southwest at " + precise(windDirection) + "degrees");
-                }
-                else if( windDirection >= quad4a && windDirection <= quad4b){
-                        $("#windDirection").append("WD: Southeast at " + precise(windDirection) + "degrees");
-                }
-                
-               
-                console.log(windDirection);
-                //Humidity
-                console.log(response.list[0].main.humidity);
-                
-                // Sea Level
-                console.log(response.list[0].main.sea_level); 
-                $("#time").append(timeOfWeather);
-                $("#icon").append(imageIcon1);
-                $("#description").append(description0);
-                $("#temp").append("Current Temperature " + forecast0.text() + "°F")
-                console.log(forecast0);
-                $("#windSpeed").append("Wind Speed at " + response.list[0].wind.speed + "M/S")
-               
-                //Second Period Forecast
-                //Current Time
-              
-               var currentTime = moment()
-               var timeOfWeather = response.list[1].dt_txt
-               
-                //Icon
-                var icon1 = response.list[1].weather[0].icon;
-                console.log(icon);
-                imageIcon2 = "http://openweathermap.org/img/w/"+icon1+".png" 
-                imageIcon3 =  $("<img>")
-                imageIcon3.attr("src",imageIcon2);
-                
-                //Description
-                var description1 = response.list[1].weather[0].description;
-                
-                //First Period Forecast
-                var forecast1 = $("<div>") 
-                var unitWeatherDefault = [[response.list[1].main.temp * (9/5)]- 459.67]
-                console.log(precise(unitWeatherDefault));
-                forecast1.text(precise(unitWeatherDefault));
-                //Wind Direction
-                console.log("Wind Direction" + response.list[1].wind.deg);
-                var windDirection1 = response.list[1].wind.deg
-                var quad1a = 0
-                var quad1b = 90
-                var quad2a = 91
-                var quad2b = 180
-                var quad3a = 181
-                var quad3b = 270
-                var quad4a = 271
-                var quad4b = 360
-             
-                if( windDirection1 >= quad1a && windDirection1 <= quad1b){
-                        $("#windDirection1").append("WD: Northeast at " + precise(windDirection1) + "degrees");
-                }
-                else if( windDirection1 >= quad2a && windDirection1 <= quad2b){
-                        $("#windDirection1").append("WD: Northwest at " + precise(windDirection1) + "degrees");
-                }
-                else if( windDirection1 >= quad3a && windDirection1 <= quad3b){
-                        $("#windDirection1").append("WD: Southwest at " + precise(windDirection1) + "degrees");
-                }
-                else if( windDirection1 >= quad4a && windDirection1 <= quad4b){
-                        $("#windDirection1").append("WD: Southeast at " + precise(windDirection1) + "degrees");
-                }
-                
-               
-                console.log(windDirection1);
-                //Humidity
-                console.log(response.list[1].main.humidity);
-                
-                // Sea Level
-                console.log(response.list[1].main.sea_level); 
-                
-                $("#time1").append(timeOfWeather);
-                $("#icon1").append(imageIcon3);
-                $("#description1").append(description1);
-                $("#temp1").append("Current Temperature " + forecast1.text() + "°F")
-                console.log(forecast1);
-                $("#windSpeed1").append("Wind Speed at " + response.list[1].wind.speed + "M/S")
-        });
+  var forecast = forecastResponse.list;
+
+  for (var i = 0; i < forecast.length; i++) {
+    var eachWeather = forecast[i];
+    var nextTime = parseFloat(eachWeather.dt) * 1000;
+
+    if (nextTime > rawTime) {
+      if (i == 0) {
+        var currentTime = parseFloat(currentResponse.dt);
+
+        if (rawTime < currentTime * 1000) {
+          return extrapolate(currentResponse, currentResponse, currentTime);
+        } else {
+          return extrapolate(currentResponse, eachWeather, rawTime);
+        }
+      }
+
+      return extrapolate(forecast[i - 1], eachWeather, rawTime);
+    }
+  }
+
+  return null;
 }
-weatherData();
+
+function extrapolate(prevWeather, nextWeather, time) {
+  var prevTime = parseFloat(prevWeather.dt) * 1000;
+  var nextTime = parseFloat(nextWeather.dt) * 1000;
+
+  if (time < prevTime) {
+    return extrapolate(prevWeather, prevWeather, prevTime);
+  }
+
+  if (time > nextTime) {
+    return extrapolate(nextWeather,  nextWeather, nextTime);
+  }
+
+  var closestWeather = (time - prevTime > nextTime - time) ? nextWeather : prevWeather;
+  var fraction = (nextWeather.dt === prevWeather.dt) ? 0 : ((time - prevTime) / (nextTime - prevTime));
+
+  function estimate(closure) {
+    var prevValue = parseFloat(closure(prevWeather));
+    var nextValue = parseFloat(closure(nextWeather));
+
+    return prevValue + (fraction * (nextValue - prevValue));
+  }
+
+  var iconURL = 'http://openweathermap.org/img/w/' + closestWeather.weather[0].icon + '.png';
+  var description = closestWeather.weather[0].description;
+  var temp = estimate(function(w) { return w.main.temp; });
+  var windSpeed = estimate(function(w) { return w.wind.speed; });
+  var windDir = estimate(function(w) { return w.wind.deg; });
+  var humidity = estimate(function(w) { return w.main.humidity; });
+  var seaLevel = estimate(function(w) { return w.main.sea_level; });
+
+  function parsePrecip(precip) {
+    if (!precip || !precip['3h']) {
+      return 0;
+    } else {
+      return parseFloat(precip['3h']);
+    }
+  }
+
+  return {
+    time: new Date(time),
+    icon: iconURL,
+    description: description,
+    temp: temp,
+    windSpeed: windSpeed,
+    windDir: windDir,
+    humidity: humidity,
+    seaLevel: seaLevel,
+    precip: parsePrecip(nextWeather.rain) + parsePrecip(nextWeather.snow)
+  };
+}
+
 //Hourly Forecast Information
 //lat,lon,time of day
-//Will it be raining at this time of day? 
+//Will it be raining at this time of day?
 //Find Parameters to describe hourly information and description
 //Version 2 Google Weather API
