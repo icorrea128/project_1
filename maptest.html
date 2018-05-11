@@ -32,11 +32,11 @@
           var middle = getPositionAtDistance(8474.5);
 
           console.log(middle);
-//          addMarker({
-//            name: 'The Middle',
-//            lat: middle.lat,
-//            long: middle.long
-//          });
+          addMarker({
+            name: 'The Middle',
+            lat: middle.lat,
+            long: middle.long
+          });
 
           addMarker({
             name: 'Someplace Wet',
@@ -48,12 +48,15 @@
             markerImageScaledSize: { width: 24, height: 24 },
             infoIconClass: 'FOO',
           });
-//          addMarkers({
-//            type: "convenience_store",
-//            radius: 480,
-//            infoIconClass: 'BAR',
-//            markerImageClass: 'QUX'
-//          })
+          addMarkers({
+            type: "convenience_store",
+            radius: 480,
+            infoIconClass: 'BAR',
+            markerImageClass: 'QUX',
+            callback: function(foo) {
+              console.log(foo);
+            }
+          })
         }
       });
     }
