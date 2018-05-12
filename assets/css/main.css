@@ -110,8 +110,8 @@
 
 
 #bikemap {
-  width: 485px;
-  height: 485px;
+  width: 100%;
+  height: 100%;
 }
 
 #column1 {
@@ -148,4 +148,8 @@
 .info-place-icon {
   
 
+}
+
+#resultspage-content {
+  padding-top: 50px;
 }
