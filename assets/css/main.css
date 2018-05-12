@@ -1,4 +1,4 @@
-h1{
+.main-title {
     font-family: 'Ribeye Marrow';
 }
 
@@ -8,16 +8,14 @@ h1{
 }
 .inputP{
     width: 400px;
-
 }
 .navbar{
  background: white;
  font-weight: bold;
- ;
 }
 .nav-link , .navbar-brand{
-color: #0808b5;
-cursor: pointer;
+  color: #0808b5;
+  cursor: pointer;
 }
 .nav-link{
  margin-right: 1em !important;
@@ -34,58 +32,56 @@ cursor: pointer;
   background:#29911b !important;
 }
 .navbar-collapse{
-    justify-content: flex-end;
-   }
-   /* Nav Styles End */
+  justify-content: flex-end;
+}
+/* Nav Styles End */
 
-   /* Home Page Styles begin */
-   .form{
-    
-    padding: 60px;
-    position: relative;
-    height: 100%;
- 
-    background-image: url("../images/bike2.jpg");
-    background-size: cover;
-   }
-   .form h1{
+/* Home Page Styles begin */
+#main-form {
+  padding: 60px;
+  position: relative;
+  height: 100%;
+
+  background-image: url("../images/bike2.jpg");
+  background-size: cover;
+}
+#main-form h1{
+  color: white;
+  margin: 2em;
+}
+#main-form img{
+  height: 100%;
+  width: 100%;
+}
+.AnimateSubmit{
+    background-color: blue;
     color: white;
-    margin: 2em;
-   }
-   .form img{
-    height: 100%;
-       width: 100%;
-   }
-    .AnimateSubmit{
-        background-color: blue;
-        color: white;
-        border-color : white;
-        border-width : 4px;
-    } 
-   
-   .bgcolor{
-        background-color: rgba(53, 104, 133, 0.466)
-       }
-   .bg2 
-{
+    border-color : white;
+    border-width : 4px;
+}
+
+.bgcolor{
+    background-color: rgba(53, 104, 133, 0.466)
+}
+.bg2 {
   background-image: url("../images/bike2.jpg");
 }
-   .color{
-       color: white;
-   }
-   
-   .form .desc h3{
-    color: white;
-   }
-   .form .desc p{
-    line-height:2;
-    color:#888;
-   }
-   .form .btn-secondary{
-    background:  #29911b;
-    color: #fff;
-    border:0;
-   }
+.color{
+   color: white;
+}
+
+.form .desc h3{
+  color: white;
+}
+.form .desc p{
+  line-height:2;
+  color:#888;
+}
+.form .btn-secondary{
+  background:  #29911b;
+  color: #fff;
+  border:0;
+}
 
 /* Contact form  styles*/
 .contact-form{
@@ -95,36 +91,56 @@ cursor: pointer;
     background-image: url("../images/image1.png");
     background-size: cover;
  }
- .contact-form h1{
+.contact-form h1{
   padding:2em 1px;
   color: #0808b5;
- }
- .contact-form .right{
+}
+.contact-form .right{
   max-width: 600px;
- }
- .contact-form .right .btn-secondary{
+}
+.contact-form .right .btn-secondary{
   background:  #29911b;
   color: #fff;
   border:0;
- }
- .contact-form .right .form-control::placeholder{
+}
+.contact-form .right .form-control::placeholder{
   color: #888;
   font-size: 16px;
- }
+}
 
 
 #bikemap {
-  width: 200px;
-  height: 200px;
+  width: 420px;
+  height: 420px;
 }
 
 #column1 {
-    border:solid;
-    background-color:gold;
+    border-color: #007bff;
+    background-color: #007bff;
+    color: #fff;
 }
 
-#time2, #description2, #temp2, #windSpeed2, #windDirection2 {
+
+#time2, #description2, #temp2, #windSpeed2, #windDirection2, #testing {
     text-align:center;
 }
 
+.map-info-bubble {
+  height: 100px !important;
+}
 
+.map-info-content {
+
+}
+
+.info-place-name {
+
+}
+
+.info-place-address {
+
+}
+
+.info-place-icon {
+
+}

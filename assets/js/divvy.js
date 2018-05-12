@@ -12,7 +12,6 @@ function loadDivvyStations(radius, callback) { // eslint-disable-line no-unused-
     var divvyMarkers = [];
 
     $.each(data, function(i, eachDivvy) {
-      console.log(eachDivvy.station_name + ' ' + eachDivvy.location.coordinates[1] + ' ' + eachDivvy.location.coordinates[0]);
       var marker = addMarker({
         name: eachDivvy.station_name,
         lat: eachDivvy.location.coordinates[1],

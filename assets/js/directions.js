@@ -500,7 +500,7 @@ function makeMarker(inputs) {
       position: inputs.location
     });
 
-    $(infoBubble.c).addClass('map-info-bubble');
+    $(infoBubble.e).addClass('map-info-bubble');
 
     infoBubble.open();
   });
