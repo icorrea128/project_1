@@ -153,3 +153,7 @@
 #resultspage-content {
   padding-top: 50px;
 }
+
+ul, li {
+  list-style-type: none;
+}
