@@ -127,19 +127,17 @@
 }
 
 .map-info-bubble {
-
+  overflow: hidden;
 }
 
 .map-info-content {
- 
+  overflow: hidden;
 }
 
 .info-place-name {
  font-size: 1rem;
  margin-bottom: 2rem;
  padding-bottom: 0rem
-
-
 }
 
 .info-place-address {
