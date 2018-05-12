@@ -19,5 +19,7 @@ function loadDivvyStations(callback) {
 
             divvyMarkers.push(marker);
         });
+
+        callback(divvyMarkers);
     });
 }
