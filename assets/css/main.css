@@ -1,20 +1,30 @@
 h1{
     font-family: 'Ribeye Marrow';
 }
+
+.font{
+    font-family: sans-serif;
+    font-size: 16px;
+}
+.inputP{
+    width: 400px;
+
+}
 .navbar{
- background: #0808b5;
- font-weight: bold
+ background: white;
+ font-weight: bold;
+ ;
 }
 .nav-link , .navbar-brand{
- color: white;
- cursor: pointer;
+color: #0808b5;
+cursor: pointer;
 }
 .nav-link{
  margin-right: 1em !important;
 }
 .nav-link:hover, .navbar-brand:hover{
- background: #f4f4f4;
- color: #0808b5;
+ background: #0808b5;
+ color: #f4f4f4;
  
 }
 .navbar-collapse{
@@ -30,11 +40,12 @@ h1{
 
    /* Home Page Styles begin */
    .form{
-    /*margin: 4em 0;*/
+    
     padding: 60px;
     position: relative;
     height: 100%;
-    background-image: url("../images/image1.png");
+ 
+    background-image: url("../images/bike2.jpg");
     background-size: cover;
    }
    .form h1{
@@ -44,12 +55,21 @@ h1{
    .form img{
     height: 100%;
        width: 100%;
-       
    }
+    .AnimateSubmit{
+        background-color: blue;
+        color: white;
+        border-color : white;
+        border-width : 4px;
+    } 
+   
    .bgcolor{
-       background-color: #0808b5;
-     
-   }
+        background-color: rgba(53, 104, 133, 0.466)
+       }
+   .bg2 
+{
+  background-image: url("../images/bike2.jpg");
+}
    .color{
        color: white;
    }

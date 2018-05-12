@@ -60,12 +60,12 @@ $(document).ready(function(){
     });
   
     $("#addrinput").on( "keydown", function( event ) {
-            $(event.delegateTarget ).css( "background-color", "transparent");
-            $("#startaddr").css({"background-color": "blue", "color":"white"} );
-            $("#endaddr").css({"background-color": "blue", "color":"white"} );
-            $("#AddrSubmit").css({"background-color": "blue", "color":"white", "border-color":"white", "border-width":"4px"} );
-            // $('document.body').css("background-image","url('../images/bike2.jpg')");
-            // $('document.body').css("background-color","white");
+            // $(event.delegateTarget ).css( "background-color", "transparent");
+            // $("#startaddr").css({"background-color": "blue", "color":"white"} );
+            // $("#endaddr").css({"background-color": "blue", "color":"white"} );
+            // $("#AddrSubmit").css({"background-color": "blue", "color":"white", "border-color":"white", "border-width":"4px"} );
+            // // $('document.body').css("background-image","url('../images/bike2.jpg')");
+            // // $('document.body').css("background-color","white");
 
         });
     

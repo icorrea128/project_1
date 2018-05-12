@@ -30,12 +30,6 @@
                  <div class="collapse navbar-collapse " id="navbarSupportedContent">
                       <ul class="navbar-nav mr-4">
                         
-                        <li class="nav-item">
-                          <a class="nav-link" data-value="about" href="about.html">About</a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link" data-value="contact" href="contact.html">Contact</a>
-                        </li>
                       </ul>
                       
                 </div>
@@ -46,14 +40,14 @@
     <div class="container">           
         <div class="row"><!-- Beginning of a row in the form -->
                 
-                <div id="addrinput"class="col-lg-9 col-md-9 col-sm-12 bgcolor rounded-circle ">
+                <div id="addrinput"class="col-lg-9 col-md-9 col-sm-12 bgcolor rounded-circle  ">
                         
                     <div class="row"><!--Location input row begins -->
                         
                         <div class="col-md-2"> </div>
                         <div class="form-group col-md-8">
                                 <h1>Map My Ride</h1><br>
-                         <input type="text" id="startaddr" class="form-control form-control-lg" placeholder="Your Location">
+                         <input type="text" id="startaddr" class="form-control form-control-lg font inputP" placeholder="Your Location"="">
                          </div>
                          <div class="col-md-2"></div>
                     </div>  <!--Location input row Ends -->
@@ -61,7 +55,7 @@
                        
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-8">
-                         <input type="text" id="endaddr" class="form-control form-control-lg" placeholder="Destination">
+                         <input type="text" id="endaddr" class="form-control form-control-lg font inputP" placeholder="Destination"="">
                         </div>
                          <div class="col-md-2"></div>
                                                              
@@ -79,7 +73,7 @@
                     <div class="row">
                         <div class="col-md-5"></div>
                         <div class="col-md-3">
-                        <input type="submit" id="AddrSubmit" data-value="bikemap" class="btn btn btn btn-primary" value="Submit">
+                        <input type="submit" id="AddrSubmit" data-value="bikemap" class="btn btn btn btn-primary AnimateSubmit" value="Submit">
                         </div>
                         <div class="col-md-4"></div>
                  
@@ -92,66 +86,6 @@
         </div> 
     </div> <!--End of container div-->
 </div> <!-- end of initial input form --> 
-
-
-<!-- Beginning of the Maps and weather section-->
-<!-- <div class="form" id="bikemap">
-    <div class="container">       
-        <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                <!-- information like weather goes here-->
-              <!--  <h2>information like weather goes here</h2>
-                 
-                </div>
-                <div class="col-lg-8 col-md-8 col-sm-12 desc">
-                  
-                 <!---map goes here-->
-                 <!-- <h2>map goes here</h2>
-                 
-                 
-                </div>
-        </div> 
-    </div>      
-</div> --> 
-<!-- End of the Maps and weather section-->
-<!-- Contact form -->
-<!-- <div class="contact-form" id="contact">
-    <div class="container">
-        <form>
-           <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12">
-             <h1>Get in Touch</h1> 
-            </div>
-                <div class="col-lg-8 col-md-8 col-sm-12 right">
-                <div class="form-group">
-                <input type="text" class="form-control form-control-lg" placeholder="Your Name" name="">
-            </div>
-            <div class="form-group">
-                <input type="email" class="form-control form-control-lg" placeholder="YourEmail@email.com" name="email">
-            </div>
-            <div class="form-group">
-                <textarea class="form-control form-control-lg">
-                 
-                </textarea>
-            </div>
-              <input type="submit" class="btn btn btn-primary" value="Submit" name="">
-            </div>
-           </div>
-         </form>
-    </div>
- </div>  -->
- 
-<!-- <script>
-        $("#startaddr").geocomplete({
-            details: ".geo-details",
-            detailsAttribute: "data-geo"
-        }).bind("geocode:result", function(event, result) {
-            console.log(event);
-            console.log(result);
-        });
-
-    
-</script> -->
 
     </body>
 </html>
