@@ -16,6 +16,8 @@ function loadDivvyStations(radius, callback) { // eslint-disable-line no-unused-
         name: eachDivvy.station_name,
         lat: eachDivvy.location.coordinates[1],
         long: eachDivvy.location.coordinates[0],
+        status: eachDivvy.status,
+        docks : eachDivvy.docks_in_service,
         radiusFromPath: radius
       });
 

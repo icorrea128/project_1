@@ -110,8 +110,8 @@
 
 
 #bikemap {
-  width: 420px;
-  height: 420px;
+  width: 485px;
+  height: 485px;
 }
 
 #column1 {
@@ -121,26 +121,32 @@
 }
 
 
-#time2, #description2, #temp2, #windSpeed2, #windDirection2, #testing {
+#time2, #description2, #temp2, #windSpeed2, #windDirection2, {
     text-align:center;
 }
 
 .map-info-bubble {
-  height: 100px !important;
+
 }
 
 .map-info-content {
-
+ 
 }
 
 .info-place-name {
+ font-size: 1rem;
+ margin-bottom: 2rem;
+ padding-bottom: 0rem
+
 
 }
 
 .info-place-address {
 
+
 }
 
 .info-place-icon {
+  
 
 }

@@ -106,6 +106,8 @@ function setPath(inputs) { // eslint-disable-line no-unused-vars
  * @param {number} inputs.lat - Latitude of the place.
  * @param {number} inputs.long - Longitude of the place.
  * @param {string} [inputs.address] - Address of the place. Optional.
+ * @param {string} [inputs.status] - status of the place. Optional.
+ * @param {string} [inputs.docks] - docks of the place. Optional.
  * @param {string} [inputs.markerImageURL] - Marker image URL. Optional.
  * @param {Size} [inputs.markerImageSize] - Original size of marker image. Optional.
  * @param {Size} [inputs.markerImageScaledSize] - Size of marker image as it should appear on the map. Optional.
@@ -125,9 +127,11 @@ function addMarker(inputs) { // eslint-disable-line no-unused-vars
     name: inputs.name,
     location: new google.maps.LatLng({ lat: inputs.lat, lng: inputs.long }),
     address: inputs.address,
-    markerImageURL: inputs.markerImageURL,
+    status: inputs.status,
+    docks: inputs.docks_in_service,
+    markerImageURL: 'https://maps.google.com/mapfiles/kml/shapes/cycling.png',
     markerImageSize: inputs.markerImageSize,
-    markerImageScaledSize: inputs.markerImageScaledSize,
+    markerImageScaledSize: new google.maps.Size(25, 25),
     infoIcon: inputs.infoIcon,
     infoIconClass: inputs.infoIconClass,
     id: id
@@ -422,9 +426,9 @@ function makeMarkerForPlace(place, inputs, id) {
   makeMarker({
     name: place.name,
     location: place.geometry.location,
-    markerImageURL: inputs.markerImageURL,
+    markerImageURL: "http://maps.google.com/mapfiles/kml/shapes/convenience.png",
     markerImageSize: inputs.markerImageSize,
-    markerImageScaledSize: inputs.markerImageScaledSize,
+    markerImageScaledSize: new google.maps.Size(25, 25),
     infoIcon: inputs.infoIcon,
     infoIconClass: inputs.infoIconClass,
     id: id
@@ -497,7 +501,20 @@ function makeMarker(inputs) {
     var infoBubble = new InfoBubble({
       map: map,
       content: content[0],
-      position: inputs.location
+      position: inputs.location,
+      maxWidth: 200,
+      maxHeight: 200,
+      shadowStyle: 1,
+      padding: 10,
+      backgroundColor: ' #e6ecff',
+      borderRadius: 20,
+      arrowSize: 10,
+      borderWidth: 1,
+      borderColor: '#2c2c2c',
+      disableAutoPan: true,
+      arrowPosition: 30,
+      backgroundClassName: 'transparent',
+      arrowStyle: 2
     });
 
     $(infoBubble.e).addClass('map-info-bubble');
