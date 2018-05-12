@@ -49,7 +49,7 @@ function initMap() { // eslint-disable-line no-unused-vars
 
   map = new google.maps.Map($('#bikemap')[0], mapOptions);
   placesService = new google.maps.places.PlacesService(map);
-  directionsDisplay.setMap(map);
+  directionsDisplay.setMap(map); 
 }
 
 /**
