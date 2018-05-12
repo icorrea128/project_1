@@ -115,9 +115,9 @@ function getWeatherAtTime(time, currentResponse, forecastResponse) {
 
     if (nextTime > rawTime) {
       if (i == 0) {
-        var currentTime = parseFloat(currentResponse.dt);
+        var currentTime = parseFloat(currentResponse.dt) * 1000;
 
-        if (rawTime < currentTime * 1000) {
+        if (rawTime < currentTime) {
           return extrapolate(currentResponse, currentResponse, currentTime);
         } else {
           return extrapolate(currentResponse, eachWeather, rawTime);
