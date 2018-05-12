@@ -5,7 +5,7 @@
 
 //Version 1 Open Weather Map
 
-var apiKey = "8ed3b9d51c85a6de3c56df1582820966";
+var weatherApiKey = "8ed3b9d51c85a6de3c56df1582820966";
 
 // BEGIN PUBLIC API
 
@@ -23,7 +23,7 @@ function sunriseAndSunset(params) { // eslint-disable-line no-unused-vars
 }
 
 function currentWeather(params) {
-  var queryURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + params.lat + "&lon=" + params.long + "&APPID=" + apiKey;
+  var queryURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + params.lat + "&lon=" + params.long + "&APPID=" + weatherApiKey;
 
   $.ajax({
     url: queryURL,
@@ -38,7 +38,7 @@ function weatherAtTime(params) { // eslint-disable-line no-unused-vars
     lat: params.lat,
     long: params.long,
     callback: function(currentResponse) {
-      var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + params.lat + "&lon=" + params.long + "&APPID=" + apiKey;
+      var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + params.lat + "&lon=" + params.long + "&APPID=" + weatherApiKey;
 
       $.ajax({
         url: queryURL,
