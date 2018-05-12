@@ -115,9 +115,10 @@
 }
 
 #column1 {
-    border-color: #007bff;
-    background-color: #007bff;
-    color: #fff;
+  padding-top: 10px;
+  border-color: #007bff;
+  background-color: #007bff;
+  color: #fff;
 }
 
 
