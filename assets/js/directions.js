@@ -492,7 +492,9 @@ function calcRoute(inputs) {
       return;
     }
 
-    inputs.callback(totalTimeAndDistance(routes[0]));
+    if (inputs.callback) {
+      inputs.callback(totalTimeAndDistance(routes[0]));
+    }
   });
 }
 

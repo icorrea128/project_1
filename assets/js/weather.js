@@ -6,7 +6,6 @@
 //Version 1 Open Weather Map
 
 var apiKey = "8ed3b9d51c85a6de3c56df1582820966";
-var inputs = {};
 
 // BEGIN PUBLIC API
 
@@ -104,21 +103,6 @@ function generateWeatherListItem(weather) { // eslint-disable-line no-unused-var
 }
 
 // END PUBLIC API
-
-function parseInput() {
-  var queryString = window.location.href;
-  var argStart = queryString.indexOf('?');
-  var argString = queryString.substring(argStart + 1);
-  var args = argString.split('&');
-  $.each(args, function(_, eachArg) {
-    var sep = eachArg.indexOf('=');
-    var key = eachArg.substring(0, sep);
-    var value = eachArg.substring(sep + 1);
-
-    inputs[key]=value;
-  });
-}
-parseInput();
 
 function getWeatherAtTime(time, currentResponse, forecastResponse) {
   var rawTime = time.getTime();

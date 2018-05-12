@@ -55,7 +55,7 @@ $(document).ready(function(){
         return;
       }
 
-        window.location.href = 'MapsWeather.html?' + 'startLat=' + startLocation.lat + '&startLong=' + startLocation.long + '&endLat=' + endLocation.lat + '&endLong' + endLocation.long + '&time=' + $('#time').val();
+        window.location.href = 'MapsWeather.html?' + 'startLat=' + startLocation.lat + '&startLong=' + startLocation.long + '&endLat=' + endLocation.lat + '&endLong=' + endLocation.long + '&time=' + $('#time').val();
         return false;
     });
   
