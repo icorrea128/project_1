@@ -37,6 +37,7 @@ function initResultsPage() { // eslint-disable-line no-unused-vars
     callback: function(response) {
       totalTime = response.totalTime;
       populateWeatherField();
+      setUpCheckBoxes();
     }
   });
 
@@ -75,13 +76,28 @@ function populateWeatherField() {
         weathers[i] = generateWeatherListItem(weather);
 
         if (!weathers.includes(null)) {
-          $.each(weathers, function(j, k) {
-            console.log(k[0].innerHTML);
-          });
           $('#weather-list').append(weathers);
         }
       }
     });
+  });
+}
+
+function setUpCheckBoxes() {
+  $('#convenience-stores:checkbox').change(function() {
+    if (this.checked) {
+      showConvenienceStores();
+    } else {
+      hideConvenienceStores();
+    }
+  });
+
+  $('#divvy-stations:checkbox').change(function() {
+    if (this.checked) {
+      showDivvies();
+    } else {
+      hideDivvies();
+    }
   });
 }
 
@@ -104,14 +120,18 @@ function hideConvenienceStores() {
 
 function showDivvies() {
   if (!savedMarkers.divvies) {
-    loadDivvyStations(function(response) {
+    loadDivvyStations(searchRadius, function(response) {
       savedMarkers.divvies = response;
     });
   } else {
-    showMarkers(savedMarkers.divvies);
+    $.each(savedMarkers.divvies, function(_, eachDivvy) {
+      showMarkers(eachDivvy);
+    });
   }
 }
 
 function hideDivvies() {
-  hideMarkers(savedMarkers.divvies);
+  $.each(savedMarkers.divvies, function(_, eachDivvy) {
+    hideMarkers(eachDivvy);
+  });
 }

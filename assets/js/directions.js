@@ -20,7 +20,7 @@ var startTime;
 var routes;
 
 var savedSearches = {};
-var nextID = 0;
+var nextID = 1;
 
 // BEGIN PUBLIC API
 
@@ -42,6 +42,7 @@ function initMap() { // eslint-disable-line no-unused-vars
   directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer();
   var chicago = new google.maps.LatLng(41.8735707,-87.650842);
+
   var mapOptions = {
     zoom:7,
     center: chicago
@@ -49,7 +50,7 @@ function initMap() { // eslint-disable-line no-unused-vars
 
   map = new google.maps.Map($('#bikemap')[0], mapOptions);
   placesService = new google.maps.places.PlacesService(map);
-  directionsDisplay.setMap(map); 
+  directionsDisplay.setMap(map);
 }
 
 /**
@@ -110,10 +111,15 @@ function setPath(inputs) { // eslint-disable-line no-unused-vars
  * @param {Size} [inputs.markerImageScaledSize] - Size of marker image as it should appear on the map. Optional.
  * @param {string} [inputs.infoIcon] - Icon for Info window. Optional.
  * @param {string} [inputs.infoIconClass] - CSS class for icons in info window. Optional.
- * @param {number} Returns a number identifying this marker, which can be used later on to hide or show it.
+ * @param {number} [inputs.radiusFromPath] - if this is set, the marker will only be added if it's at least this close to the path.
+ * @return {number} Returns a number identifying this marker, which can be used later on to hide or show it.
  */
 function addMarker(inputs) { // eslint-disable-line no-unused-vars
   var id = nextID++;
+
+  if (inputs.radiusFromPath && routes[0] && !isNearPath(inputs)) {
+    return null;
+  }
 
   makeMarker({
     name: inputs.name,
@@ -181,6 +187,7 @@ function addMarkers(inputs) { // eslint-disable-line no-unused-vars
   function addAtDistance(dist) {
     var pos = getPositionAtDistance(dist);
     var latLng = new google.maps.LatLng(pos.lat, pos.long);
+
     findInterestingPlaces(latLng, inputs, addInterestingPlace);
   }
 
@@ -297,6 +304,7 @@ function getPositionAtDistance(distance) { // eslint-disable-line no-unused-vars
 
   $.each(route.legs, function(_, eachLeg) {
     var legLength = eachLeg.distance.value;
+
     var legStartDistance = legEndDistance;
     legEndDistance = legStartDistance + legLength;
 
@@ -319,7 +327,11 @@ function getPositionAtDistance(distance) { // eslint-disable-line no-unused-vars
           var dLng = (stepEnd.lng() - stepStart.lng()) * fraction;
 
           position = { lat: stepStart.lat() + dLat, long: stepStart.lng() + dLng };
+
+          return false;
         }
+
+        return true;
       });
 
       if (!position) {
@@ -378,6 +390,33 @@ function hideMarkers(id) { // eslint-disable-line no-unused-vars
 }
 
 // END PUBLIC API
+
+function isNearPath(inputs) {
+  var route = routes[0];
+
+  var totalDistance = totalTimeAndDistance(route).totalDistance;
+
+  var lat = inputs.lat;
+  var long = inputs.long;
+  var radius = inputs.radiusFromPath;
+
+  for (var distance = 0; distance < totalDistance; distance += inputs.radiusFromPath) {
+    var pos = getPositionAtDistance(distance);
+
+    var dLat = pos.lat - lat;
+    var dLng = (pos.long - long);
+    var dX = dLng * 111320 * Math.cos(lat);
+    var dY = dLat * 110574;
+
+    var dist = Math.sqrt(dX * dX + dY * dY);
+
+    if (dist <= radius) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 function makeMarkerForPlace(place, inputs, id) {
   makeMarker({

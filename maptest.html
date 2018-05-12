@@ -35,10 +35,10 @@
     function myInit() {
       initMap();
       setPath({
-        startLat: 42.0416193,
-        startLong: -87.68,
-        endLat: 42.157849,
-        endLong: -87.776675,
+        startLat: 42.157849,
+        startLong: -87.776675,
+        endLat: 42.0416193,
+        endLong: -87.68,
         time: new Date(),
         callback: function(output) {
           console.log('total time: ' + output.totalTime);
@@ -65,15 +65,15 @@
 //            infoIconClass: 'FOO',
 //          });
           
-//          convenienceStores = addMarkers({
-//            type: "convenience_store",
-//            radius: 480,
-//            infoIconClass: 'BAR',
-//            markerImageClass: 'QUX',
-//            callback: function(foo) {
-//              console.log(foo);
-//            }
-//          });
+          convenienceStores = addMarkers({
+            type: "convenience_store",
+            radius: 480,
+            infoIconClass: 'BAR',
+            markerImageClass: 'QUX',
+            callback: function(foo) {
+              console.log(foo);
+            }
+          });
         }
       });
     }
