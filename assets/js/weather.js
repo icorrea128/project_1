@@ -60,8 +60,8 @@ function generateWeatherListItem(weather) { // eslint-disable-line no-unused-var
     }
   }
 
-  var fahrenheit = precise(weather.temp * 9 / 5 - 459.67) + '°F';
-  var windMPH = precise(weather.windSpeed / 1609.344 * 3600) + ' mph';
+  var fahrenheit = precise(weather.temp * 9 / 5 - 459.67);
+  var windMPH = 'Wind Speed: ' + precise(weather.windSpeed / 1609.344 * 3600) + ' mph';
   var windDirection = weather.windDir;
   var windDirName = function() {
     if (windDirection <= 22.5) {
@@ -85,18 +85,18 @@ function generateWeatherListItem(weather) { // eslint-disable-line no-unused-var
     }
   }();
 
-  var windDirString = windDirName + ' at ' + precise(weather.windDir) + '°';
+  var windDirString = 'Wind Direction: ' + windDirName + ' at ' + precise(weather.windDir);
 
-  var precip = precise(weather.precip / 25.4) + ' inches over 3-hour period';
+  var precip = 'Precipitation: ' + precise(weather.precip / 25.4) + ' inches over 3-hour period';
 
   var li = $('<li>');
 
   li.append($('<div>').addClass('weather-time').text(weather.time.toLocaleTimeString()));
   li.append($('<img>').addClass('weather-icon').attr('src', weather.icon));
   li.append($('<div>').addClass('weather-description').text(weather.description));
-  li.append($('<div>').addClass('weather-temp').text(fahrenheit));
+  li.append($('<div>').addClass('weather-temp').text(fahrenheit).append('&deg; F'));
   li.append($('<div>').addClass('weather-wind-speed').text(windMPH));
-  li.append($('<div>').addClass('weather-wind-direction').text(windDirString));
+  li.append($('<div>').addClass('weather-wind-direction').text(windDirString).append('&deg;'));
   li.append($('<div>').addClass('weather-precip').text(precip));
 
   return li;

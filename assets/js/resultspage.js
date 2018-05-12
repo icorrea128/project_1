@@ -45,8 +45,8 @@ function initResultsPage() { // eslint-disable-line no-unused-vars
     lat: queryStringVars.startLat,
     long: queryStringVars.startLong,
     callback: function(response) {
-      $('#sunrise').text(response.sunrise);
-      $('#sunset').text(response.sunset);
+      $('#sunrise').text('Sunrise: ' + response.sunrise.toLocaleTimeString());
+      $('#sunset').text('Sunset: ' + response.sunset.toLocaleTimeString());
     }
   });
 }
